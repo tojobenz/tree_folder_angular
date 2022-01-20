@@ -1,0 +1,13 @@
+<div class="modal-content">
+    <div class="modal-header">
+      <h4>{{title || 'Prompt'}}</h4>
+    </div>
+    <div class="modal-body">
+      <label>{{question}}</label>
+      <input type="text" class="form-control" [(ngModel)]="message" name="name" />
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-danger" (click)="fermer()">Annuler</button>
+      <button type="button" class="btn btn-primary" (click)="apply()">Confirmer</button>
+    </div>
+  </div>

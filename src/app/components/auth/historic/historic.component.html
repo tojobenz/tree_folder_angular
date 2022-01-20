@@ -1,0 +1,64 @@
+<div class="col-md-12 user-container">
+    <h2 style="margin: auto">Historique de connexion</h2>
+    <div class="row">
+        <div class="col-md-6">
+
+
+            <form class="form-inline">
+                <div class="form-group mb-2">
+                    <input type="date" id="start" (click)="refresh()" class="form-control"  #start>
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <input type="date" class="form-control" (click)="refresh()" id="end"  #end>
+                </div>
+                <button (click)="filterDate(start.value, end.value)" class="btn btn-primary">Filtrer</button>
+              </form>
+
+        </div>
+        <div class="col-md-6 mb-3">     Nombre de pages:
+            <select (change)="handlePageSizeChange($event)">
+              <option *ngFor="let size of pageSizes" [ngValue]="size">
+                {{ size }}
+              </option>
+            </select>
+
+        </div>
+    </div>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th></th>
+        <th>Nom</th>
+        <th>email</th>
+        <th>ip</th>
+        <th>Pays</th>
+        <th>Date</th>
+        <th>Heure</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let user of users| paginate : {
+        itemsPerPage: pageSize,
+        currentPage: page,
+        totalItems: count
+      }; let i = index"  [class.active]="i == currentIndex">
+        <td>{{i}}</td>
+        <td>{{user.name}}</td>
+        <td>{{user.email}}</td>
+        <td>{{user.ip}}</td>
+        <td>{{user.country}}</td>
+        <td>{{user.date}}</td>
+        <td>{{user.time}}</td>
+      </tbody>
+    </table>
+    <div class="col-md-12">
+        <pagination-controls
+          previousLabel="Prev"
+          nextLabel="Next"
+          responsive="true"
+          (pageChange)="handlePageChange($event)"
+        ></pagination-controls>
+      </div>
+
+
+  </div>

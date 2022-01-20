@@ -1,0 +1,57 @@
+<section>
+
+    <form
+    *ngIf="!isSuccessful"
+    name="form"
+    (ngSubmit)="f.form.valid && onSubmit()"
+    #f="ngForm"
+    novalidate
+  >
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-8 col-xl-6">
+          <div class="row">
+            <div class="col text-center">
+              <h1>Envoi demande</h1>
+              <p class="text-h3">Mot de passe oublié</p>
+            </div>
+          </div>
+          <div class="row align-items-center">
+            <div class="col mt-4">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                name="email"
+                [(ngModel)]="form.email"
+                required
+                minlength="3"
+                maxlength="120"
+                #name="ngModel"
+              />
+              <div class="alert-danger" *ngIf="f.submitted">
+                <div *ngIf="email.errors.required">Veuillez saisir l'email</div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row justify-content-start mt-4">
+            <div class="col">
+
+              <button class="btn btn-primary mt-4">Envoyer</button>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="alert alert-warning" *ngIf="f.submitted && isSignUpFailed">
+      Erreur de l'envoie!<br />{{ errorMessage }}
+    </div>
+  </form>
+
+  <div class="alert alert-success" *ngIf="isSuccessful">
+    Succès de l'envoie
+  </div>
+  </section>
