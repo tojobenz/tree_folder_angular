@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from 'src/app/service/user.service';
-import { AuthService } from './../../../service/auth.service';
+import { UserService } from 'src/app/services/user.service';
+import { AuthService } from '../../../services/auth.service';
 import generateUniqueId  from 'generate-unique-id';
 
 @Component({

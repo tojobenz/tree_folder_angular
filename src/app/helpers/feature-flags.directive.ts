@@ -1,5 +1,5 @@
 import { Directive, ViewContainerRef, TemplateRef, Input, OnInit } from '@angular/core';
-import { UserService } from './../service/user.service';
+import { UserService } from '../services/user.service';
 
 @Directive({
   selector: '[featureFlags]'

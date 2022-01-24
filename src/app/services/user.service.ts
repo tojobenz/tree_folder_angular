@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {environment} from './../../environments/environment';
-import { Item } from '../model/item';
-import { User } from '../model/user';
+import {environment} from '../../environments/environment';
+import { Item } from '../models/item';
+import { User } from '../models/user';
 import { map , tap, shareReplay} from 'rxjs/operators';
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })

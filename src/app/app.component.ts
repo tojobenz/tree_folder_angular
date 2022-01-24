@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { TokenStorageService } from './service/token-storage.service';
+import { TokenStorageService } from './services/token-storage.service';
 import {Observable} from 'rxjs'
-import { AuthService } from './service/auth.service';
-import { UserService } from './service/user.service';
+import { AuthService } from './services/auth.service';
+import { UserService } from './services/user.service';
 
 @Component({
   selector: 'app-root',

@@ -2,14 +2,14 @@ import {
   Component, Input, OnInit, Output, EventEmitter
 } from '@angular/core';
 import { SimpleModalService } from 'ngx-simple-modal';
-import {Item} from '../../model/item';
+import {Item} from '../../models/item';
 import {NewFolderComponent} from '../modals/new-folder/new-folder.component'
 import { UploadFileComponent } from '../modals/upload-file/upload-file.component';
 import { Observable, of } from 'rxjs';
-import { DataService } from './../../service/data.service';
+import { DataService } from '../../services/data.service';
 import { map , tap, shareReplay} from 'rxjs/operators';
-import { UserService } from 'src/app/service/user.service';
-import { TokenStorageService } from 'src/app/service/token-storage.service';
+import { UserService } from 'src/app/services/user.service';
+import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { RenameFolderComponent } from '../modals/rename-folder/rename-folder.component';
 import { DeleteComponent } from '../modals/delete/delete.component';
 @Component({
