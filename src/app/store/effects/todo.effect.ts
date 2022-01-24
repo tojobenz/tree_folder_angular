@@ -1,2 +1,2 @@
-export class Todo.Effect {
+export class TodoEffect {
 }

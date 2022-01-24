@@ -1,2 +1,2 @@
-export class Todo.Reducer {
+export class TodoReducer {
 }

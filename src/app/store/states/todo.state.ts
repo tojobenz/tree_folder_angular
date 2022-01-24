@@ -1,2 +1,2 @@
-export class Todo.State {
+export class TodoState {
 }

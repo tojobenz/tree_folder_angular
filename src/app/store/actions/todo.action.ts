@@ -1,2 +1,2 @@
-export class Todo.Action {
+export class TodoAction {
 }

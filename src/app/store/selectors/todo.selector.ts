@@ -1,2 +1,2 @@
-export class Todo.Selector {
+export class TodoSelector {
 }
