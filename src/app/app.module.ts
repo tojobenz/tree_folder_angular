@@ -30,6 +30,8 @@ import { EditCabinetComponent } from './components/cabinet/edit-cabinet/edit-cab
 import { HistoricComponent } from './components/auth/historic/historic.component'; // <- import OrderModule
 import { NgxPaginationModule } from 'ngx-pagination';
 import { DeleteComponent } from './components/modals/delete/delete.component';
+import { StoreModule } from '@ngrx/store';
+import { counterReducer } from './store/reducers/counter.reducer';
 @NgModule({
   declarations: [
     AppComponent,
@@ -58,6 +60,9 @@ import { DeleteComponent } from './components/modals/delete/delete.component';
     AppRoutingModule,
     PdfViewerModule,
     SimpleModalModule.forRoot({container: "modal-container"}),
+    StoreModule.forRoot({ 
+      count: counterReducer
+    }),
     HttpClientModule,
     NgxDocViewerModule,
     NgxPaginationModule,
