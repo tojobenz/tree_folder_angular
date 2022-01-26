@@ -32,6 +32,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { DeleteComponent } from './components/modals/delete/delete.component';
 import { StoreModule } from '@ngrx/store';
 import { counterReducer } from './store/reducers/counter.reducer';
+import { TodoComponent } from './components/todo/todo.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -52,7 +53,8 @@ import { counterReducer } from './store/reducers/counter.reducer';
     AddCabinetComponent,
     EditCabinetComponent,
     HistoricComponent,
-    DeleteComponent
+    DeleteComponent,
+    TodoComponent
   ],
   imports: [
     BrowserModule,

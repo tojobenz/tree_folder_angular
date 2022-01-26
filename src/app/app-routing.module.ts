@@ -11,6 +11,7 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
 import { EditUserComponent } from './components/list-user/edit-user/edit-user.component';
 import { ListUserComponent } from './components/list-user/list-user.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { TodoComponent } from './components/todo/todo.component';
 import { TreeviewComponent } from './components/treeview/treeview.component';
 import { AdminGuard } from './helpers/admin-guard';
 import { LoginGuard } from './helpers/login-guard';
@@ -24,6 +25,11 @@ const routes: Routes = [
     canActivate: [NormalGuard],
     //loadChildren: () => import('./file-explorer/file-explorer.module').then(mod => mod.FileExplorerModule)
     component: TreeviewComponent,
+  },
+  {
+    path: 'todo',
+    canActivate: [NormalGuard],
+    component: TodoComponent,
   },
   { path: 'login', 
   component: LoginComponent,
