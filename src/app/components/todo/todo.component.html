@@ -1,1 +1,66 @@
-<p>todo works!</p>
+<h6>Create Todo:</h6>
+<form (ngSubmit)="onSubmit()" #todoForm="ngForm">
+  <div class="form-row">
+    <div class="col-auto">
+      <input type="text" 
+        class="form-control" 
+        placeholder="Description" 
+        [(ngModel)]="model.desc"
+        name="desc"
+        #desc="ngModel">  
+    </div>
+
+    <div class="col-auto">
+      <input type="text" 
+        class="form-control" 
+        placeholder="Responsible" 
+        [(ngModel)]="model.responsible"
+        name="responsible"
+        #responsible="ngModel">  
+    </div>
+
+    <div>
+      <select
+        class="form-control"
+        [(ngModel)] = "model.priority"
+        name="priority"
+        #priority="ngModel">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">Create</button>
+    </div>  
+  </div>
+</form>
+<br />
+<h6>Todo List:</h6>
+<div *ngIf="(todos | async)?.length !=0">
+  <table class="table">
+    <thead class="thead-inverse">
+      <tr>
+        <th>Completed</th>
+        <th>Description</th>
+        <th>Responsible</th>
+        <th>Priority</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let t of todos | async">
+        <td><input type="checkbox" [checked]="t.isCompleted"></td>
+        <td [ngClass]="{ completed: t.isCompleted }">{{ t.desc }}</td>
+        <td [ngClass]="{ completed: t.isCompleted }"k>{{ t.responsible }}</td>
+        <td>
+          <span *ngIf="t.priority == 'low'" class="badge badge-success">Low</span>
+          <span *ngIf="t.priority == 'medium'" class="badge badge-warning">Medium</span>
+          <span *ngIf="t.priority == 'high'" class="badge badge-danger">High</span>
+        </td>
+        <td><button class="btn btn-primary">Delete</button></td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>

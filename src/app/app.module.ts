@@ -33,6 +33,12 @@ import { DeleteComponent } from './components/modals/delete/delete.component';
 import { StoreModule } from '@ngrx/store';
 import { counterReducer } from './store/reducers/counter.reducer';
 import { TodoComponent } from './components/todo/todo.component';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
+
+import { NgRedux, NgReduxModule } from '@angular-redux/store'
+import { IAppState, todosReducer, INIT_STATE } from './store/reducers/todo.reducer'
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -63,11 +69,13 @@ import { TodoComponent } from './components/todo/todo.component';
     PdfViewerModule,
     SimpleModalModule.forRoot({container: "modal-container"}),
     StoreModule.forRoot({ 
-      count: counterReducer
+      count: counterReducer,
     }),
+    StoreDevtoolsModule.instrument({ maxAge: 25 }),
     HttpClientModule,
     NgxDocViewerModule,
     NgxPaginationModule,
+    NgReduxModule
   ],
   entryComponents: [
     NewFolderComponent,
@@ -78,4 +86,8 @@ import { TodoComponent } from './components/todo/todo.component';
   providers: [UserService, DataService, authInterceptorProviders],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule { 
+  constructor(ngRedux: NgRedux<IAppState>) {
+    ngRedux.configureStore(todosReducer, INIT_STATE)
+  }
+}
