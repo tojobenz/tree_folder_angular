@@ -1,5 +1,8 @@
 {
-  "buildCommand": "export NODE_OPTIONS=--openssl-legacy-provider && npm run build",
-  "devCommand": "export NODE_OPTIONS=--openssl-legacy-provider && npm run start",
-  "installCommand": "npm install"
+  "buildCommand": "npm run build",
+  "devCommand": "npm run start",
+  "installCommand": "npm install",
+  "env": {
+    "NODE_OPTIONS": "--openssl-legacy-provider"
+  }
 }
