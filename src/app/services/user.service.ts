@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import {environment} from '../../environments/environment';
 import { Item } from '../models/item';
 import { User } from '../models/user';
-import { map , tap, shareReplay} from 'rxjs/operators';
+import { TokenStorageService } from './token-storage.service';
+
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
@@ -18,31 +19,35 @@ const httpDownload = {
 export class UserService {
   private url = (environment as any).urlApi;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private tokenStorage: TokenStorageService) { }
+
+  getTokenStorage(): TokenStorageService {
+    return this.tokenStorage;
+  }
 
   getCabinet(): Observable<any> {
     return this.http.get(this.url + 'auth/cabinet');
     
   }
 
-  getCabinetID(name): Observable<any> {
+  getCabinetID(name: string): Observable<any> {
     return this.http.get<any>(this.url + 'auth/cabinet-name/'+name);
   }
 
-  deleteCabinet(id): Observable<any> {
+  deleteCabinet(id: number): Observable<any> {
     return this.http.delete<any>(this.url + 'auth/cabinet-delete/'+id);
   }
 
-  editCabinet(id): Observable<any> {
+  editCabinet(id: number): Observable<any> {
     return this.http.get<any>(this.url + 'auth/cabinet-edit/'+id);
   }
 
-  updateCabinet(id, data): Observable<any> {
+  updateCabinet(id: number, data: any): Observable<any> {
     return this.http.put<any>(this.url + 'auth/cabinet-update/'+id, data);
   }
 
 
-  postCabinet(cabinet): Observable<any> {
+  postCabinet(cabinet: { name: string }): Observable<any> {
     return this.http.post(this.url + 'auth/cabinet', {
       name: cabinet.name,
     }, httpOptions);
@@ -53,30 +58,20 @@ export class UserService {
     
   }
   
-  getFolderCabinet(id): Observable<any> {
-    return this.http.get<any>(this.url + 'auth/listFolder/'+id);
+  getFolderCabinet(id: number): Observable<Item[]> {
+    return this.http.get<Item[]>(this.url + 'auth/listFolder/'+id);
   }
-  getCabinetUser(id): Observable<any> {
+  getCabinetUser(id: number): Observable<any> {
     return this.http.get<any>(this.url + 'auth/cabinet/'+id);
   }
-  downloadFile(path): Observable<any> {
-    //return this.http.get(this.url + 'auth/download', { responseType: 'blob'});
-    return this.http.get(this.url +'auth/download/' + path, { responseType: 'blob', observe: 'response'}).pipe(
-      map((res: any) => {
-        return new Blob([res.body]);
-      })
-    )
+  downloadFile(path: string): Observable<Blob> {
+    return this.http.get(this.url +'auth/download/' + path, { responseType: 'blob' });
   }
-  showPdf(path): Observable<any> {
-    //return this.http.get(this.url + 'auth/download', { responseType: 'blob'});
-    return this.http.get(this.url +'auth/showPdf/' + path, { responseType: 'blob', observe: 'response'}).pipe(
-      map((res: any) => {
-        return new Blob([res.body], { type: 'application/pdf' })
-      })
-    )
+  showPdf(path: string): Observable<Blob> {
+    return this.http.get(this.url +'auth/showPdf/' + path, { responseType: 'blob' });
   }
 
-  postFolder(folder): Observable<any> {
+  postFolder(folder: Item): Observable<any> {
     return this.http.post(this.url + 'auth/createFolder', {
       title: folder.title,
       parent: folder.parent,
@@ -87,47 +82,47 @@ export class UserService {
     
   }
 
-  upload(data): Observable<any> {
+  upload(data: FormData): Observable<any> {
     return this.http.post<any>(this.url + 'auth/upload', data);
   }
 
   getProfile(): Observable<User> {
     return this.http.get<User>(this.url + 'auth/profile');
   }
-  getUser(): Observable<User> {
-    return this.http.get<User>(this.url + 'auth/list-user');
+  getUser(): Observable<User[]> {
+    return this.http.get<User[]>(this.url + 'auth/list-user');
   }
-  updatePassword(id, data): Observable<User> {
+  updatePassword(id: number, data: any): Observable<User> {
     return this.http.post<any>(this.url + 'auth/change-password/' + id, data);
   }
-  updateUser(id, data): Observable<User> {
+  updateUser(id: number, data: any): Observable<User> {
     return this.http.put<any>(this.url + 'auth/update-user/' + id, data);
   }
-  deleteUser(id): Observable<any> {
+  deleteUser(id: number): Observable<any> {
     return this.http.delete<any>(this.url + 'auth/delete-user/'+id);
   }
-  findUser(id): Observable<any> {
-    return this.http.get<any>(this.url + 'auth/find-user/'+id);
+  findUser(id: number): Observable<User> {
+    return this.http.get<User>(this.url + 'auth/find-user/'+id);
   }
-  updateFolder(id, data): Observable<User> {
+  updateFolder(id: number, data: any): Observable<any> {
     return this.http.put<any>(this.url + 'auth/update-folder/' + id, data);
   }
-  deleteFolder(id): Observable<any> {
+  deleteFolder(id: number): Observable<any> {
     return this.http.delete<any>(this.url + 'auth/delete-folder/' + id);
   }
-  deleteFolderCabinet(id): Observable<any> {
+  deleteFolderCabinet(id: number): Observable<any> {
     return this.http.delete<any>(this.url + 'auth/delete-folder-cabinet/' + id);
   }
-  removeFolder(data): Observable<any> {
+  removeFolder(data: any): Observable<any> {
     return this.http.post<any>(this.url + 'auth/remove-folder', data, httpOptions);
   }
-  emailForgot(data): Observable<any> {
+  emailForgot(data: any): Observable<any> {
     return this.http.post<any>(this.url + 'auth/emailForgot', data, httpOptions);
   }
   getIp(): Observable<any> {
     return this.http.get('https://api.db-ip.com/v2/free/self');
   }
-  historic(data): Observable<any> {
+  historic(data: any): Observable<any> {
     return this.http.post<any>(this.url + 'auth/historic', data, httpOptions);
   }
   listHistoric(): Observable<any> {

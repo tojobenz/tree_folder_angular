@@ -7,7 +7,8 @@ import { AppComponent } from './app.component';
 import { FeatureFlagsDirective } from './helpers/feature-flags.directive';
 import { UserService } from './services/user.service';
 import { TreeviewComponent } from './components/treeview/treeview.component';
-import { DataService } from './services/data.service';
+import { FolderService } from './services/folder.service';
+import { FileService } from './services/file.service';
 import { NewFolderComponent } from './components/modals/new-folder/new-folder.component';
 import { UploadFileComponent } from './components/modals/upload-file/upload-file.component';
 import { SimpleModalModule } from 'ngx-simple-modal';
@@ -27,7 +28,7 @@ import { EditUserComponent } from './components/list-user/edit-user/edit-user.co
 import { ForgotComponent } from './components/auth/forgot/forgot.component';
 import { AddCabinetComponent } from './components/cabinet/add-cabinet/add-cabinet.component';
 import { EditCabinetComponent } from './components/cabinet/edit-cabinet/edit-cabinet.component';
-import { HistoricComponent } from './components/auth/historic/historic.component'; // <- import OrderModule
+import { HistoricComponent } from './components/auth/historic/historic.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { DeleteComponent } from './components/modals/delete/delete.component';
 @NgModule({
@@ -68,7 +69,7 @@ import { DeleteComponent } from './components/modals/delete/delete.component';
     RenameFolderComponent,
     DeleteComponent
   ],
-  providers: [UserService, DataService, authInterceptorProviders],
+  providers: [UserService, FolderService, FileService, authInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

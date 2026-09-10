@@ -7,7 +7,7 @@ import { SimpleModalService } from 'ngx-simple-modal';
 @Component({
   selector: 'app-cabinet',
   templateUrl: './cabinet.component.html',
-  styleUrls: ['./cabinet.component.css']
+  styleUrls: []
 })
 export class CabinetComponent implements OnInit {
  users: any;
@@ -37,7 +37,6 @@ export class CabinetComponent implements OnInit {
 
   
   deleteUser(cab): void {
-
     this.SimpleModalService.addModal(DeleteComponent, {
       title: 'Suppression',
       message: 'Confirmer la suppression'})
@@ -45,31 +44,34 @@ export class CabinetComponent implements OnInit {
         if (isConfirmed) {
           this.userService.deleteCabinet(cab.id)
           .subscribe( data => {
-            var removeIndex = this.users.map(item => item.id)
+            const removeIndex = this.users.map(item => item.id)
             .indexOf(cab.id);
-        ~removeIndex && this.users.splice(removeIndex, 1);
-          });
-    
-          this.userService.deleteCabinet(cab.id).subscribe(data=> {
-            console.log(data)
-          }) 
-            let feed = {
+            if (removeIndex !== -1) {
+              this.users.splice(removeIndex, 1);
+            }
+            
+            // delete all folder associated to the parent
+            const feed = {
               path: cab.name.split(' ').join('_'),
               isFolder: 1
-            }
-            this.userService.deleteFolderCabinet(cab.id).subscribe(data => {
-              console.log(data);
-            });   
-               this.userService.removeFolder(feed).subscribe(data => {
-              console.log(data);
-            });  
-    
+            };
+            
+            this.userService.deleteFolderCabinet(cab.id).subscribe(() => {
+              this.userService.removeFolder(feed).subscribe({
+                next: () => {
+                  // delete done
+                },
+                error: (error) => {
+                  console.error('Error removing folder:', error);
+                }
+              });
+            });
+          }, error => {
+            console.error('Error deleting cabinet:', error);
+          });
         }
     });
-
-
-    
-  };
+  }
 
   addCabinet(): void {
     this.router.navigate(['new-cabinet']);
@@ -99,10 +101,7 @@ export class CabinetComponent implements OnInit {
   }
 
   searchTitle(val) {
-   
     this.users = this.users.filter(x => x.name === val);
-    console.log(this.users);
-
   }
   refresh() {
     this.list();

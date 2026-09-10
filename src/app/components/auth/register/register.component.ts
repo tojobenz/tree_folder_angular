@@ -6,7 +6,7 @@ import generateUniqueId  from 'generate-unique-id';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrls: []
 })
 export class RegisterComponent implements OnInit {
   private cabinet: any;

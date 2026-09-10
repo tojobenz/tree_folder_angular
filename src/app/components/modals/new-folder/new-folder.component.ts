@@ -1,30 +1,37 @@
 import { Component } from '@angular/core';
 import { SimpleModalComponent } from 'ngx-simple-modal';
 
-
-export interface PromptModel {
-  title:string;
-  question:string;
+export interface NewFolderModel {
+  title: string;
+  question: string;
 }
 
 @Component({
   selector: 'app-new-folder',
   templateUrl: './new-folder.component.html',
-  styleUrls: ['./new-folder.component.css']
+  styleUrls: []
 })
-export class NewFolderComponent extends SimpleModalComponent<PromptModel, string> implements PromptModel {
+export class NewFolderComponent extends SimpleModalComponent<NewFolderModel, string> implements NewFolderModel {
   title: string;
   question: string;
   message: string = '';
+
   constructor() {
     super();
   }
-  apply() {
-    this.result = this.message;
+
+  apply(): void {
+    if (this.message.trim()) {
+      this.result = this.message;
+      this.close();
+    }
+  }
+
+  cancel(): void {
     this.close();
   }
-  fermer() {
-    this.close();
+
+  isValid(): boolean {
+    return this.message.trim().length > 0;
   }
 }
-

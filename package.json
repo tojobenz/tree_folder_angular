@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:legacy": "NODE_OPTIONS=--openssl-legacy-provider ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -25,6 +26,7 @@
     "@ngrx/store": "^13.0.2",
     "@ngrx/store-devtools": "^13.0.2",
     "angular-font-awesome": "^3.1.2",
+    "autoprefixer": "^10.5.5",
     "bootstrap": "^4.6.1",
     "browser-my-ip": "^0.1.1",
     "crypto-js": "^4.0.0",
@@ -37,7 +39,9 @@
     "ngx-doc-viewer": "^1.1.0",
     "ngx-pagination": "^5.0.0",
     "ngx-simple-modal": "^1.4.17",
+    "postcss": "^8.5.28",
     "rxjs": "~6.4.0",
+    "tailwindcss": "^4.3.3",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
   },

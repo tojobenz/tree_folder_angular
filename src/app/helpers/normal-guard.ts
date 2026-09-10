@@ -7,10 +7,10 @@ import { TokenStorageService } from '../services/token-storage.service';
 })
 export class NormalGuard implements CanActivate{
     constructor(private token: TokenStorageService, public router: Router) {}
-    canActivate(): boolean {
-      if (!this.token.getUser()) {
-        this.router.navigate(['login']);
-        return false;
+    canActivate(): boolean | UrlTree {
+      const user = this.token.getUser();
+      if (!user) {
+        return this.router.createUrlTree(['login']);
       }
       
       return true;

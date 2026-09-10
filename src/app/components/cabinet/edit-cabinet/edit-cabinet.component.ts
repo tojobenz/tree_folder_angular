@@ -7,7 +7,7 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 @Component({
   selector: 'app-edit-cabinet',
   templateUrl: './edit-cabinet.component.html',
-  styleUrls: ['./edit-cabinet.component.css']
+  styleUrls: []
 })
 export class EditCabinetComponent implements OnInit {
 
@@ -17,7 +17,7 @@ export class EditCabinetComponent implements OnInit {
   encrypted: any = "";
   decrypted: string;
   oldCabinet: string;
-  idCabinet: string;
+  idCabinet: number;
   load = false;
   constructor(
     private token: TokenStorageService,
@@ -48,11 +48,10 @@ export class EditCabinetComponent implements OnInit {
         data => {
           this.currentData = data;
           this.oldCabinet = data.name;
-          this.idCabinet = data.id;
-          console.log(data);
+          this.idCabinet = Number(data.id);
         },
         error => {
-          console.log(error);
+          console.error('Error loading cabinet:', error);
         });
   }
 
@@ -67,8 +66,13 @@ export class EditCabinetComponent implements OnInit {
               path: path,
               oldpath: data[i].path
             };
-           this.userService.updateFolder(data[i].id,feed).subscribe(data => {
-            console.log(data);
+           this.userService.updateFolder(data[i].id,feed).subscribe({
+             next: () => {
+               // Update successful
+             },
+             error: (error) => {
+               console.error('Error updating folder:', error);
+             }
           }); 
          } else {
           let path = this.currentData.name.split(' ').join('_');
@@ -77,8 +81,13 @@ export class EditCabinetComponent implements OnInit {
               path: path,
               oldpath: data[i].path
             };
-           this.userService.updateFolder(data[i].id,feed).subscribe(data => {
-            console.log(data);
+           this.userService.updateFolder(data[i].id,feed).subscribe({
+             next: () => {
+               // Update successful
+             },
+             error: (error) => {
+               console.error('Error updating folder:', error);
+             }
           }); 
          }
       }
@@ -89,12 +98,12 @@ export class EditCabinetComponent implements OnInit {
     this.userService.updateCabinet(this.currentData.id, this.currentData)
       .subscribe(
         response => {
-          console.log(response);
           this.message = 'Succès de la modification';
           this.load = false;
         },
         error => {
-          console.log(error);
+          console.error('Error updating cabinet:', error);
+          this.load = false;
         }); 
   }
 }

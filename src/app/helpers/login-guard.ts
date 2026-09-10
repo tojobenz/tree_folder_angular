@@ -9,13 +9,12 @@ export class LoginGuard implements CanActivate{
     private session;
     isLoggedin: boolean;
     constructor(private token: TokenStorageService, public router: Router) {}
-    canActivate(): boolean {
-      if (!this.token.getUser()) {
-        
+    canActivate(): boolean | UrlTree {
+      const user = this.token.getUser();
+      if (!user) {
         return true;
       }
-      this.router.navigate(['explorer']);
-      return false;
+      return this.router.createUrlTree(['explorer']);
     }
     
 }

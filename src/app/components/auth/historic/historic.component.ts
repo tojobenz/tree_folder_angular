@@ -4,7 +4,7 @@ import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-historic',
   templateUrl: './historic.component.html',
-  styleUrls: ['./historic.component.css']
+  styleUrls: []
 })
 export class HistoricComponent implements OnInit {
   users: any;

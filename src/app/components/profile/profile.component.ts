@@ -7,7 +7,7 @@ import { TokenStorageService } from '../../services/token-storage.service';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrls: []
 })
 export class ProfileComponent implements OnInit {
 

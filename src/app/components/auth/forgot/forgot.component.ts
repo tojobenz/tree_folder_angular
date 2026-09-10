@@ -5,7 +5,7 @@ import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-forgot',
   templateUrl: './forgot.component.html',
-  styleUrls: ['./forgot.component.css']
+  styleUrls: []
 })
 export class ForgotComponent implements OnInit {
   form: any = {};

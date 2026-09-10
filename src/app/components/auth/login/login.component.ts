@@ -3,76 +3,99 @@ import { AuthService } from '../../../services/auth.service';
 import { TokenStorageService } from '../../../services/token-storage.service';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: []
 })
 export class LoginComponent implements OnInit {
   form: any = {};
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';
-  roles: string[] = [];
- country: any;
- ip: any;
- load=  false;
-  constructor(private authService: AuthService, private tokenStorage: TokenStorageService, public router: Router, public userService: UserService) { }
+  isLoading = false;
+  country: string | null = null;
+  ip: string | null = null;
 
-  ngOnInit() {
-     if (this.tokenStorage.getToken()) {
+  constructor(
+    private authService: AuthService, 
+    private tokenStorage: TokenStorageService, 
+    public router: Router, 
+    public userService: UserService
+  ) { }
+
+  ngOnInit(): void {
+    if (this.tokenStorage.getToken()) {
       this.isLoggedIn = true;
-      this.roles = this.tokenStorage.getUser().roles;
-    } 
-    this.userService.getIp().subscribe(data =>{
+      const user = this.tokenStorage.getUser();
+      if (user) {
+        this.authService.setLoggedIn(true);
+        this.authService.setAdmin(user.roles === '1');
+      }
+    }
+    
+    // Récupérer les infos IP pour l'historique
+    this.userService.getIp().pipe(
+      catchError(() => of({ ipAddress: 'unknown', countryName: 'unknown' }))
+    ).subscribe(data => {
       this.ip = data.ipAddress;
       this.country = data.countryName;
-    })
+    });
   }
 
-  
-
-  onSubmit() {
+  onSubmit(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
 
     this.authService.login(this.form).subscribe(
       data => {
-        this.load = true;
         this.tokenStorage.saveToken(data.access_token);
-        this.authService.profile().subscribe((res:any) => {
-          this.tokenStorage.saveUser(res);
-          this.authService.setLoggedIn(true);
-          this.authService.setAdmin(true);
-  
-            let feed= {
-              name: this.tokenStorage.getUser().name,
-              email: this.tokenStorage.getUser().email,
-              country: this.country,
-              ip: this.ip,
-            }
-            this.userService.historic(feed).subscribe(data => {
-            });
-          //this.roles = this.tokenStorage.getUser().roles;
-          //this.router.navigate(['explorer'])
-          this.load = false
-          this.router.navigateByUrl('/explorer');
-          this.isLoginFailed = false;
-          this.isLoggedIn = true;
-        }) 
-
-        //this.reloadPage();
+        
+        this.authService.profile().subscribe(
+          (user: any) => {
+            this.tokenStorage.saveUser(user);
+            this.authService.setLoggedIn(true);
+            this.authService.setAdmin(user.roles === '1');
+    
+            // Enregistrer l'historique de connexion
+            this.recordLoginHistory(user);
+    
+            this.isLoading = false;
+            this.isLoginFailed = false;
+            this.isLoggedIn = true;
+            this.router.navigate(['/explorer']);
+          },
+          error => {
+            this.isLoading = false;
+            this.errorMessage = 'Erreur lors de la récupération du profil';
+            this.isLoginFailed = true;
+          }
+        );
       },
       err => {
-        this.load = false;
-        this.errorMessage = err.error.error;
+        this.isLoading = false;
+        this.errorMessage = err.error && err.error.error ? err.error.error : 'Erreur de connexion';
         this.isLoginFailed = true;
-        
       }
     );
   }
 
-  reloadPage() {
-    window.location.reload();
+  private recordLoginHistory(user: any): void {
+    const loginData = {
+      name: user.name,
+      email: user.email,
+      country: this.country || 'unknown',
+      ip: this.ip || 'unknown',
+    };
+    
+    this.userService.historic(loginData).pipe(
+      catchError(error => {
+        console.error('Failed to record login history:', error);
+        return of(null);
+      })
+    ).subscribe();
   }
-
 }

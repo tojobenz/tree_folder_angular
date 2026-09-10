@@ -1,393 +1,490 @@
-import {
-  Component, Input, OnInit, Output, EventEmitter
-} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SimpleModalService } from 'ngx-simple-modal';
-import {Item} from '../../models/item';
-import {NewFolderComponent} from '../modals/new-folder/new-folder.component'
-import { UploadFileComponent } from '../modals/upload-file/upload-file.component';
-import { Observable, of } from 'rxjs';
-import { DataService } from '../../services/data.service';
-import { map , tap, shareReplay} from 'rxjs/operators';
-import { UserService } from 'src/app/services/user.service';
-import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { Item } from '../../models/item';
+import { NewFolderComponent } from '../modals/new-folder/new-folder.component';
+import { UploadFileComponent, UploadFileResult } from '../modals/upload-file/upload-file.component';
+import { FolderService } from '../../services/folder.service';
+import { FileService } from '../../services/file.service';
+import { UserService } from '../../services/user.service';
+import { TokenStorageService } from '../../services/token-storage.service';
 import { RenameFolderComponent } from '../modals/rename-folder/rename-folder.component';
 import { DeleteComponent } from '../modals/delete/delete.component';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 @Component({
   selector: 'app-treeview',
   templateUrl: './treeview.component.html',
-  styleUrls: ['./treeview.component.css']
+  styleUrls: []
 })
-export class TreeviewComponent{
-  private map = new Map<any, Item>();
-  @Input() list = [];
-  @Input() opened = new Set();
-  @Input() matcher = (term, item) => item.title.toLowerCase().includes(term.toLowerCase());
-  @Output() addChild = new EventEmitter<any>();
-  @Output() removeChild = new EventEmitter<any>();
-  currentPath: string;
-  found: Item[] = [];
-  pdfView = false;
-  cabinet = "";
-  load=  false;
-
-  list$: Observable<Item[]>
-  constructor(private token: TokenStorageService,private SimpleModalService: SimpleModalService,  private data: DataService, private userService: UserService) {
-
-    this.listFolder();
-    this.ShowCabinet();
-  }
-
-  listFolder() {
-    if(this.token.getUser().roles === "1" || this.token.getUser().roles === "3") {
-      this.userService.getFolder().subscribe(data => {
-        return of<Item[]>(this.list = data);
-        
-      });
-    } else {
-      this.userService.getFolderCabinet(this.token.getUser().cabinet_id).subscribe(data=> {
-        return of<Item[]>(this.list = data);
-      })
-    }
-  }
-  ShowCabinet() {
-    this.userService.getCabinetUser(this.token.getUser().cabinet_id).subscribe(data => {
-    }) 
-  }
-
-  toggle(item) {
-    this.opened.has(item.id) ? this.opened.delete(item.id) : !this.opened.add(item.id);
-    if(item.isFolder == false) {
-      this.pdfView = true;
-      let x=item.path
-      var f = x.substr(0, x.lastIndexOf('.')) || x;
-      var iz = f.split('/').join('|');
+export class TreeviewComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   
-      this.userService.showPdf(iz).subscribe(data => {
-        var fileURL = URL.createObjectURL(data);
-        this.pdfSrc = fileURL
-      })
+  folders: Item[] = [];
+  openedFolders = new Set<number>();
+  foundItems: Item[] = [];
+  currentPath: string = '';
+  
+  isLoading = false;
+  pdfView = false;
+  pdfSrc = '';
+  pageVariable = 1;
+  
+  imageView = false;
+  imageSrc = '';
+  currentFileType: 'pdf' | 'image' | 'other' = 'other';
+  currentFile: Item | null = null;
+  
+  // Cabinet info
+  cabinetName = '';
+
+  constructor(
+    private tokenStorage: TokenStorageService,
+    private modalService: SimpleModalService,
+    private folderService: FolderService,
+    private fileService: FileService,
+    private userService: UserService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadFolders();
+    this.loadCabinetInfo();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    
+    // clear url blob
+    if (this.pdfSrc) {
+      URL.revokeObjectURL(this.pdfSrc);
+    }
+    if (this.imageSrc) {
+      URL.revokeObjectURL(this.imageSrc);
     }
   }
 
-  getItemsAtParent(parentId) {
-    return this.list.filter(item => {
-      return parentId ? item.parent === parentId : !item.parent
+  /**
+   * loading folder from services
+   */
+  private loadFolders(): void {
+    this.isLoading = true;
+    this.folderService.loadFolders().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (folders) => {
+        this.folders = folders;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading folders:', error);
+        this.isLoading = false;
+      }
     });
   }
 
-  hasChildren(id) {
-
-    const found = this.list.find(item => item.parent === +id);
-    return found;
+  /**
+   * data cabinet
+   */
+  private loadCabinetInfo(): void {
+    const user = this.tokenStorage.getUser();
+    if (user && user.cabinet_id) {
+      this.userService.getCabinetUser(user.cabinet_id).pipe(
+        takeUntil(this.destroy$)
+      ).subscribe({
+        next: (cabinet) => {
+          if (cabinet && cabinet.length > 0) {
+            this.cabinetName = cabinet[0].name;
+          }
+        },
+        error: (error) => {
+          console.error('Error loading cabinet info:', error);
+        }
+      });
+    }
   }
-  collapseAll() {
-    this.opened.clear();
+
+  /**
+   * open a folder
+   */
+  toggleFolder(item: Item): void {
+    if (this.openedFolders.has(item.id)) {
+      this.openedFolders.delete(item.id);
+    } else {
+      this.openedFolders.add(item.id);
+    }
+
+    // if file, check type
+    if (!item.isFolder) {
+      this.displayFile(item);
+    }
   }
 
-  expandAll() {
-    const ids = this.list.map(item => item.id);
-    this.opened = new Set(ids);
+  /**
+   * vizualize
+   */
+  private displayFile(item: Item): void {
+    this.currentFile = item;
+    const fileType = this.getFileType(item.path);
+    this.currentFileType = fileType;
+
+    this.pdfView = false;
+    this.imageView = false;
+    this.pdfSrc = '';
+    this.imageSrc = '';
+
+    switch (fileType) {
+      case 'pdf':
+        this.displayPdf(item);
+        break;
+      case 'image':
+        this.displayImage(item);
+        break;
+      case 'other':
+        //  not show if unknow type
+        console.log('File type not supported for preview:', item.path);
+        break;
+    }
   }
 
-  show(id) {
-    let item = 'parent' in id ? id : this.find(+id);
-    console.log(item)
+  /**
+   * determine type file
+   */
+  public getFileType(filePath: string): 'pdf' | 'image' | 'other' {
+    const fileParts = filePath.split('.');
+    const extension = fileParts.length > 1 ? fileParts[fileParts.length - 1].toLowerCase() : '';
+    
+    const pdfExtensions = ['pdf'];
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+    
+    if (pdfExtensions.includes(extension)) {
+      return 'pdf';
+    } else if (imageExtensions.includes(extension)) {
+      return 'image';
+    } else {
+      return 'other';
+    }
+  }
 
-    if (!item) {
+  /**
+   * display pdf
+   */
+  private displayPdf(item: Item): void {
+    console.log('Displaying PDF for item:', item);
+    this.pdfView = true;
+    this.fileService.showPdf(item).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (blob) => {
+        console.log('PDF blob received, creating object URL');
+        this.pdfSrc = URL.createObjectURL(blob);
+        console.log('PDF object URL created:', this.pdfSrc);
+      },
+      error: (error) => {
+        console.error('Error displaying PDF:', error);
+        this.pdfView = false;
+      }
+    });
+  }
+
+  /**
+   * display image
+   */
+  private displayImage(item: Item): void {
+    console.log('Displaying image for item:', item);
+    this.imageView = true;
+    
+    // download image
+    this.fileService.getFileBlob(item).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (blob) => {
+        console.log('Image blob received, creating object URL');
+        this.imageSrc = URL.createObjectURL(blob);
+        console.log('Image object URL created:', this.imageSrc);
+      },
+      error: (error) => {
+        console.error('Error displaying image:', error);
+        this.imageView = false;
+      }
+    });
+  }
+
+  /**
+   * close vizualiser
+   */
+  closeViewer(): void {
+    this.pdfView = false;
+    this.imageView = false;
+    this.pdfSrc = '';
+    this.imageSrc = '';
+    this.currentFileType = 'other';
+    
+    if (this.pdfSrc) {
+      URL.revokeObjectURL(this.pdfSrc);
+    }
+    if (this.imageSrc) {
+      URL.revokeObjectURL(this.imageSrc);
+    }
+  }
+
+  /**
+   */
+  getItemsByParent(parentId: number | null): Item[] {
+    return this.folderService.getItemsByParent(parentId);
+  }
+
+  hasChildren(itemId: number): boolean {
+    return this.folderService.hasChildren(itemId);
+  }
+
+  collapseAll(): void {
+    this.openedFolders.clear();
+  }
+
+
+  expandAll(): void {
+    const allIds = this.folders.map(item => item.id);
+    this.openedFolders = new Set(allIds);
+  }
+
+
+  showItemPath(itemId: number): void {
+    const item = this.folderService.findItem(itemId);
+    if (!item) return;
+
+    let currentItem = item;
+    while (currentItem.parent) {
+      this.openedFolders.add(currentItem.parent);
+      currentItem = this.folderService.findItem(currentItem.parent);
+      if (!currentItem) break;
+    }
+  }
+
+  
+  resetSearch(): void {
+    this.foundItems = [];
+  }
+
+  searchItems(term: string): void {
+    if (!term.trim()) {
+      this.resetSearch();
       return;
     }
 
-    while (item.parent) {
-      this.opened.add(item.parent);
-      item = this.find(item.parent);
-    }
+    this.foundItems = this.folderService.searchItems(term);
+    this.foundItems.forEach(item => this.showItemPath(item.id));
   }
 
-  
-  private find(id) {
-    return this.list.find(item => item.id === id);
-  }
-
-  searchReset() {
-    this.found = [];
-  }
-  remove(el) {
-
-    this.SimpleModalService.addModal(DeleteComponent, {
+  deleteItem(item: Item): void {
+    this.modalService.addModal(DeleteComponent, {
       title: 'Suppression',
-      message: 'Confirmation du suppression'})
-      .subscribe((isConfirmed) => {
-        if (isConfirmed) {
-          var removeIndex = this.list.map(item => item.id)
-          .indexOf(el.id);
-      ~removeIndex && this.list.splice(removeIndex, 1);
-          let feed = {
-            path: el.path,
-            isFolder: el.isFolder
+      message: 'Confirmation de la suppression'
+    }).subscribe((isConfirmed) => {
+      if (isConfirmed) {
+        this.performDelete(item);
+      }
+    });
+  }
+
+  private performDelete(item: Item): void {
+    const folderData = {
+      path: item.path,
+      isFolder: item.isFolder
+    };
+
+    this.userService.deleteFolder(item.id).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: () => {
+        this.userService.removeFolder(folderData).pipe(
+          takeUntil(this.destroy$)
+        ).subscribe({
+          next: () => {
+            this.folders = this.folders.filter(f => f.id !== item.id);
+            this.folderService.updateCache(this.folders);
+          },
+          error: (error) => {
+            console.error('Error removing folder:', error);
           }
-            this.userService.deleteFolder(el.id).subscribe(data => {
-            console.log(data);
-          });   
-             this.userService.removeFolder(feed).subscribe(data => {
-            console.log(data);
-          });   
-        }
+        });
+      },
+      error: (error) => {
+        console.error('Error deleting folder:', error);
+      }
     });
   }
 
 
-  search(term) {
-    this.found = this.list.filter(item => this.matcher.call(this, term, item));
-    this.found.forEach(item => this.show(item))
+  showCreateFolderModal(parentId: number): void {
+    this.modalService.addModal(NewFolderComponent, {
+      title: 'Nouveau dossier',
+      question: 'Nom du dossier'
+    }).subscribe((folderName) => {
+      if (folderName && folderName.trim()) {
+        this.createNewFolder(parentId, folderName);
+      }
+    });
   }
 
-  showCreateFolder(el) {
-    let parentPath = this.list.find(item => item.id === el);
-    if(parentPath.path.includes('/')) { 
-      let a = parentPath.path.substring(0, parentPath.path.indexOf('/'));
-      this.userService.getCabinetID(a.split('_').join(' ')).subscribe(d => {
- this.SimpleModalService.addModal(NewFolderComponent, {
-      title: 'Nouveau dossier',
-      question: 'Nom du dossier'})
-      .subscribe((message) => {
-        if(message!= undefined) {
-          this.load = true;
-          let new_text = message.split(' ').join('_');
-          let parentPath = this.list.find(item => item.id === el);
+  private createNewFolder(parentId: number, folderName: string): void {
+    this.isLoading = true;
+    const user = this.tokenStorage.getUser();
+    
+    if (!user) {
+      console.error('User not authenticated');
+      this.isLoading = false;
+      return;
+    }
 
-          this.userService.getFolder().subscribe(data => {
-            let max = Math.max.apply(null, data.map(item => item.id));
+    this.folderService.createFolder(parentId, folderName, user.cabinet_id).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (newFolder) => {
+        this.isLoading = false;
+        // Recharger les dossiers pour avoir les données à jour
+        this.loadFolders();
+      },
+      error: (error) => {
+        console.error('Error creating folder:', error);
+        this.isLoading = false;
+      }
+    });
+  }
 
-            let feed = {
-              id: max + 1,
-              title: message,
-              parent: el,
-              path: parentPath.path.split(' ').join('_') +'/' + new_text,
-              isFolder: true,
-              cabinet_id: d[0].id,
-            };
-            this.userService.postFolder(feed).subscribe(data => {
-              console.log(data);
-            });
-            this.list.push(feed);
-            this.load = false;
-          });
+  showUploadFileModal(parentId: number): void {
+    this.modalService.addModal(UploadFileComponent, {
+      title: 'Ajout d\'un fichier',
+      question: 'Le fichier'
+    }).subscribe((result: UploadFileResult) => {
+      if (result && result.upload && result.upload.length > 0) {
+        this.uploadFile(parentId, result.upload[0], result.message);
+      }
+    });
+  }
+
+  private uploadFile(parentId: number, file: File, message: string): void {
+    this.isLoading = true;
+    const user = this.tokenStorage.getUser();
+    
+    if (!user) {
+      console.error('User not authenticated');
+      this.isLoading = false;
+      return;
+    }
+
+    const parentItem = this.folderService.findItem(parentId);
+    if (!parentItem) {
+      console.error('Parent folder not found');
+      this.isLoading = false;
+      return;
+    }
+
+    const validation = this.fileService.validateFile(file, 10, ['pdf', 'doc', 'docx', 'txt', 'jpg', 'png']);
+    if (!validation.valid) {
+      console.error('File validation failed:', validation.error);
+      this.isLoading = false;
+      return;
+    }
+
+    this.fileService.uploadFile(file, parentItem.path, message).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: () => {
+        this.fileService.createFileRecord(file, parentId, parentItem.path, user.cabinet_id, this.folders).pipe(
+          takeUntil(this.destroy$)
+        ).subscribe({
+          next: (newFile) => {
+            this.folders.push(newFile);
+            this.folderService.updateCache(this.folders);
+            this.isLoading = false;
+          },
+          error: (error) => {
+            console.error('Error creating file record:', error);
+            this.isLoading = false;
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error uploading file:', error);
+        this.isLoading = false;
+      }
+    });
+  }
+
+
+  renameItem(item: Item): void {
+    const currentName = item.title;
+    const fileName = item.path.split('/').pop() || currentName;
+
+    this.modalService.addModal(RenameFolderComponent, {
+      title: 'Modifier le nom',
+      question: 'Le nouveau nom',
+      message: fileName
+    }).subscribe((newName) => {
+      if (newName && newName.trim() && newName !== currentName) {
+        this.performRename(item, newName);
+      }
+    });
+  }
+
+  private performRename(item: Item, newName: string): void {
+    const user = this.tokenStorage.getUser();
+    if (!user) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    const parentItem = this.folderService.findItem(item.parent || 0);
+    if (!parentItem && item.parent) {
+      console.error('Parent folder not found');
+      return;
+    }
+
+    const sanitisedNewName = newName.split(' ').join('_');
+    const oldPath = item.path;
+    const parentPath = parentItem ? parentItem.path : '';
+    const newPath = parentPath ? `${parentPath}/${sanitisedNewName}` : sanitisedNewName;
+
+    const updateData = {
+      title: newName,
+      path: newPath,
+      oldpath: oldPath
+    };
+
+    this.userService.updateFolder(item.id, updateData).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: () => {
+        // Mettre à jour l'item local
+        const itemIndex = this.folders.findIndex(f => f.id === item.id);
+        if (itemIndex !== -1) {
+          this.folders[itemIndex].title = newName;
+          this.folders[itemIndex].path = newPath;
         }
-      }); 
-      })
-    } else {
-      this.userService.getCabinetID(parentPath.path.split('_').join(' ')).subscribe(d => {
- this.SimpleModalService.addModal(NewFolderComponent, {
-      title: 'Nouveau dossier',
-      question: 'Nom du dossier'})
-      .subscribe((message) => {
-        if(message!= undefined) {
-          this.load = true;
-          let new_text = message.split(' ').join('_');
-          let parentPath = this.list.find(item => item.id === el);
+        this.folderService.updateCache(this.folders);
+      },
+      error: (error) => {
+        console.error('Error renaming item:', error);
+      }
+    });
+  }
 
-
-          this.userService.getFolder().subscribe(data => {
-            let max = Math.max.apply(null, data.map(item => item.id));
-            let feed = {
-              id: max + 1,
-              title: message,
-              parent: el,
-              path: parentPath.path.split(' ').join('_') +'/' + new_text,
-              isFolder: true,
-              cabinet_id: d[0].id,
-            };
-            this.userService.postFolder(feed).subscribe(data => {
-              console.log(data);
-            });
-            this.list.push(feed);
-            this.load = false;
-        
-          });
-
-        }
-      }); 
-      })
+  downloadFile(item: Item): void {
+    const fileToDownload = item || this.currentFile;
+    if (fileToDownload) {
+      this.fileService.downloadFile(fileToDownload);
     }
   }
-  showUploadFile(el) {
-
-    this.SimpleModalService.addModal(UploadFileComponent, {
-      title: 'Ajout d\'un fichier',
-      question: 'le fichier'})
-      .subscribe((message) => {
-        if(message != undefined) {
-
-          let parentPath = this.list.find(item => item.id === el);
-          if(parentPath.path.includes('/')) {
-            let a = parentPath.path.substring(0, parentPath.path.indexOf('/'));
-            this.userService.getCabinetID(a.split('_').join(' ')).subscribe(d => {
-              this.load = true;
-              let new_text = message.upload[0].name.split(' ').join('_');
-              let formData = new FormData();
-      
-                formData.append('file', message.upload[0]);
-                formData.append('msg', message.message);
-                formData.append('path', '/' + parentPath.path);
-                this.userService.upload(formData).subscribe((up) =>
-                console.log(up), (err) => console.log(err));
-      
-            this.userService.getFolder().subscribe(data => {
-              let max = Math.max.apply(null, data.map(item => item.id));
-            let feed = {
-              id: max + 1,
-              title: new_text,
-              parent: el,
-              path: parentPath.path +'/' + new_text,
-              isFolder: false,
-              cabinet_id: d[0].id,
-            };
-            this.userService.postFolder(feed).subscribe(data => {
-              console.log(data);
-            });
-            this.list.push(feed);
-            this.load = false
-          
-            });
-             })
-           
-          } else {
-            this.userService.getCabinetID(parentPath.path.split('_').join(' ')).subscribe(d => { 
-              this.load = true;
-              let new_text = message.upload[0].name.split(' ').join('_');
-              let formData = new FormData();
-      
-                formData.append('file', message.upload[0]);
-                formData.append('msg', message.message);
-                formData.append('path', '/' + parentPath.path);
-                this.userService.upload(formData).subscribe((up) =>
-                console.log(up), (err) => console.log(err));
-      
-            this.userService.getFolder().subscribe(data => {
-              let max = Math.max.apply(null, data.map(item => item.id));
-            let feed = {
-              id: max + 1,
-              title: new_text,
-              parent: el,
-              path: parentPath.path +'/' + new_text,
-              isFolder: false,
-              cabinet_id: d[0].id,
-            };
-            this.userService.postFolder(feed).subscribe(data => {
-              console.log(data);
-            });
-            this.list.push(feed);
-            this.load = false
-          
-            });
-             })
-           
-          }  
-        }
-      });
-  }
-
-  renameFile(el) {
-    var iz = el.title.split('dossier ').join('|');
-    const oldTitle = el.title.split(' ').join('_');
-    let parentPath = this.list.find(item => item.id === el.id);
-    let fichier = parentPath.path.split("/").pop();
-     this.SimpleModalService.addModal(RenameFolderComponent, {
-      title: 'Modifier le nom',
-      question: 'Le nouveau nom', message: fichier})
-      .subscribe((message) => {
-        if(message!= undefined) {
-        let objIndex = this.list.findIndex((obj => obj.id == el.id));
-        //Update object's name property.
-        this.list[objIndex].title = message;
-        let new_text = message.split(' ').join('_');
-
-        let a = parentPath.path.substring(0, parentPath.path.indexOf('/'));
-        this.userService.getCabinetID(a.split('_').join(' ')).subscribe(d => {
-
-          //Get the last value of slash
-          var rest = parentPath.path.substring(0, parentPath.path.lastIndexOf("/") + 1);
-          this.userService.getFolderCabinet(d[0].id).subscribe(data=> {
-
-           for( let i =0; i< data.length; i++) {
-               let a = data[i].path.split(parentPath.path).join(rest.concat(new_text));
-               if(data[i].path === parentPath.path) {
-                 let feed = {
-                   title: message,
-                   path: a,
-                   oldpath: parentPath.path
-                 };
-                this.userService.updateFolder(data[i].id,feed).subscribe(data => {
-                 console.log(data);
-               }); 
-               } else if(data[i].path.includes(parentPath.path)) {
-                 let feed = {
-                   path: a,
-                   oldpath: parentPath.path
-                 };
-                this.userService.updateFolder(data[i].id,feed).subscribe(data => {
-                 console.log(data);
-               }); 
-               }
-         
-           }
-         }) 
-        })
-     
 
 
-      }
-      });
- 
-  }
-
-  downloadFile(el) {
-    let x=el.path
-    var f = x.substr(0, x.lastIndexOf('.')) || x;
-    var n = el.path.lastIndexOf('/');
-  var result = el.path.substring(n + 1);  
-    console.log(result);
-     var iz = el.path.split('/').join('|');
-    this.userService.downloadFile(iz).subscribe((data) => {
-
-      const blob = new Blob([data]);
-    
-      var downloadURL = window.URL.createObjectURL(data);
-      console.log(data)
-       console.log(blob)
-      var link = document.createElement('a');
-      link.href = downloadURL;
-      link.download = result;
-      link.click(); 
-      
-    }) 
-  }
-
-  pdfSrc = "";
-  pageVariable = 1;
-
-  nextPage() {
+  nextPage(): void {
     this.pageVariable++;
   }
-  prevPage() {
-    if(this.pageVariable > 1) {
+
+  prevPage(): void {
+    if (this.pageVariable > 1) {
       this.pageVariable--;
-    }
- 
-  }
-  onFileSelected() {
-    let $img: any = document.querySelector('#file');
-
-    if (typeof (FileReader) !== 'undefined') {
-      let reader = new FileReader();
-
-      reader.onload = (e: any) => {
-        console.log(e)
-
-        this.pdfSrc = e.target.result;
-      };
-
-      reader.readAsArrayBuffer($img.files[0]);
     }
   }
 }

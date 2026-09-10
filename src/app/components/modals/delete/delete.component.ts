@@ -9,7 +9,7 @@ export interface ConfirmModel {
 @Component({
   selector: 'app-delete',
   templateUrl: './delete.component.html',
-  styleUrls: ['./delete.component.css']
+  styleUrls: []
 })
 export class DeleteComponent  extends SimpleModalComponent<ConfirmModel, boolean> implements ConfirmModel {
   title: string;

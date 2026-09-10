@@ -6,7 +6,7 @@ import * as CryptoJS from 'crypto-js';
 @Component({
   selector: 'app-list-user',
   templateUrl: './list-user.component.html',
-  styleUrls: ['./list-user.component.css']
+  styleUrls: []
 })
 export class ListUserComponent implements OnInit {
   tokenFromUI: string = "0123456789123456";
@@ -37,7 +37,7 @@ export class ListUserComponent implements OnInit {
           this.tutorials = data;
         },
         error => {
-          console.log(error);
+          console.error('Error loading users:', error);
         });
   }
 

@@ -9,7 +9,7 @@ import { DeleteComponent } from '../../modals/delete/delete.component';
 @Component({
   selector: 'app-edit-user',
   templateUrl: './edit-user.component.html',
-  styleUrls: ['./edit-user.component.css']
+  styleUrls: []
 })
 export class EditUserComponent implements OnInit {
   isSuccessful = false;
@@ -48,10 +48,9 @@ export class EditUserComponent implements OnInit {
       .subscribe(
         data => {
           this.currentData = data;
-          console.log(data);
         },
         error => {
-          console.log(error);
+          console.error('Error loading user:', error);
         });
   }
 
@@ -61,13 +60,13 @@ export class EditUserComponent implements OnInit {
     this.userService.updateUser(this.currentData.id, this.currentData)
       .subscribe(
         response => {
-          console.log(response);
           this.message = 'Succès de la modification';
           this.load = false;
           this.isSuccessful = true;
         },
         error => {
-          console.log(error);
+          console.error('Error updating user:', error);
+          this.load = false;
         });
   }
 
@@ -81,14 +80,13 @@ export class EditUserComponent implements OnInit {
           this.userService.deleteUser(this.currentData.id)
           .subscribe(
             response => {
-              
-              console.log(response);
               this.load = false;
               this.message = 'Succès de la suppression';
               this.isSuccessful = true;
             },
             error => {
-              console.log(error);
+              console.error('Error deleting user:', error);
+              this.load = false;
             }); 
         }
     });
@@ -103,6 +101,5 @@ export class EditUserComponent implements OnInit {
      // includeSymbols: ['@','_','|','-'],
       });
       this.currentData.password = password;
-      console.log(password)
   }
 }

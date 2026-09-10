@@ -11,7 +11,7 @@ export interface PromptModel {
 @Component({
   selector: 'app-rename-folder',
   templateUrl: './rename-folder.component.html',
-  styleUrls: ['./rename-folder.component.css']
+  styleUrls: []
 })
 export class RenameFolderComponent extends SimpleModalComponent<PromptModel, string> implements PromptModel {
   title: string;
