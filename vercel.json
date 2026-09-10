@@ -1,8 +1,9 @@
 {
   "buildCommand": "npm run build",
-  "devCommand": "npm run start",
-  "installCommand": "npm install",
+  "outputDirectory": "dist/angular-install",
+  "installCommand": "npm install --production=false",
   "env": {
-    "NODE_OPTIONS": "--openssl-legacy-provider"
+    "NODE_OPTIONS": "--openssl-legacy-provider",
+    "NPM_CONFIG_PRODUCTION": "false"
   }
 }
