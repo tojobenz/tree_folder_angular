@@ -53,7 +53,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
 
     __webpack_require__.r(__webpack_exports__);
     /* harmony default export */
-    __webpack_exports__["default"] = "  <div class=\"container-fluid\">\r\n    <app-nav-bar *ngIf=\"isLoggedIn\"></app-nav-bar>\r\n  \r\n    <router-outlet></router-outlet>\r\n  </div>\r\n";
+    __webpack_exports__["default"] = "  <div class=\"container-fluid\">\r\n    <app-nav-bar *ngIf=\"isLoggedIn\"></app-nav-bar>\r\n  \r\n    <div class=\"mt-6\">\r\n      <router-outlet></router-outlet>\r\n    </div>\r\n  </div>\r\n";
 
     /***/
   }),
@@ -308,7 +308,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
 
     __webpack_require__.r(__webpack_exports__);
     /* harmony default export */
-    __webpack_exports__["default"] = "<div *ngIf=\"!isLoading\">\r\n  <!-- Barre de recherche et contrôles -->\r\n  <form class=\"flex flex-wrap gap-3 mb-4\">\r\n    <div class=\"flex-1 min-w-[200px]\">\r\n      <label for=\"search\" class=\"sr-only\">Recherche</label>\r\n      <input \r\n        type=\"text\" \r\n        class=\"w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all\"\r\n        #searchInput \r\n        id=\"search\" \r\n        placeholder=\"Rechercher...\"\r\n        (keyup.enter)=\"searchItems(searchInput.value)\">\r\n    </div>\r\n    <button \r\n      type=\"button\" \r\n      class=\"flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all\"\r\n      (click)=\"searchItems(searchInput.value)\">\r\n      <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\r\n        <circle cx=\"11\" cy=\"11\" r=\"8\"></circle>\r\n        <line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"></line>\r\n      </svg>\r\n      Chercher\r\n    </button>\r\n    <button \r\n      type=\"button\" \r\n      class=\"flex items-center gap-2 px-4 py-2 border-2 border-gray-300 text-gray-600 rounded-lg font-semibold hover:bg-gray-100 transition-all\"\r\n      (click)=\"resetSearch()\">\r\n      <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\r\n        <line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"></line>\r\n        <line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"></line>\r\n      </svg>\r\n      Annuler\r\n    </button>\r\n    <div class=\"flex gap-2 ml-auto\">\r\n      <button \r\n        (click)=\"collapseAll()\" \r\n        class=\"flex items-center gap-2 px-4 py-2 border-2 border-gray-300 text-gray-600 rounded-lg font-semibold hover:bg-gray-100 transition-all\">\r\n        <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\r\n          <polyline points=\"18 15 12 9 6 15\"></polyline>\r\n        </svg>\r\n        Tout fermer\r\n      </button>\r\n      <button \r\n        (click)=\"expandAll()\" \r\n        class=\"flex items-center gap-2 px-4 py-2 border-2 border-gray-300 text-gray-600 rounded-lg font-semibold hover:bg-gray-100 transition-all\">\r\n        <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\r\n          <polyline points=\"6 9 12 15 18 9\"></polyline>\r\n        </svg>\r\n        Tout ouvrir\r\n      </button>\r\n    </div>\r\n  </form>\r\n\r\n  <!-- Contenu principal -->\r\n  <div class=\"grid grid-cols-1 lg:grid-cols-3 gap-6\">\r\n    <!-- Arborescence -->\r\n    <div class=\"lg:col-span-2\">\r\n      <ul class=\"list-none pl-0 m-0\">\r\n        <ng-template #folderTree let-parentId>\r\n          <li *ngFor=\"let item of getItemsByParent(parentId)\" \r\n              [ngClass]=\"{'bg-yellow-50 border-l-4 border-yellow-400': foundItems.includes(item)}\">\r\n            \r\n            <!-- Item header -->\r\n            <span class=\"group flex items-center p-3 rounded-lg hover:bg-indigo-50 transition-all\">\r\n              <!-- Expand/Collapse button -->\r\n              <span \r\n                class=\"flex items-center justify-center w-6 h-6 mr-2 cursor-pointer transition-transform bg-indigo-100 text-indigo-500 rounded\"\r\n                (click)=\"toggleFolder(item)\" \r\n                [ngClass]=\"{'rotate-90': openedFolders.has(item.id)}\">\r\n                <ng-container *ngIf=\"hasChildren(item.id)\">▶</ng-container>\r\n              </span>\r\n              \r\n              <!-- Item icon and name -->\r\n              <span \r\n                (click)=\"toggleFolder(item)\" \r\n                class=\"flex-1 flex items-center cursor-pointer font-medium text-gray-700 hover:text-indigo-500 transition-colors\">\r\n                <i class=\"fa fa-folder mr-2 text-yellow-500\" *ngIf=\"item.isFolder\"></i>\r\n                <i class=\"fa fa-file-pdf-o mr-2 text-red-500\" *ngIf=\"!item.isFolder && getFileType(item.path) === 'pdf'\"></i>\r\n                <i class=\"fa fa-file-image-o mr-2 text-green-500\" *ngIf=\"!item.isFolder && getFileType(item.path) === 'image'\"></i>\r\n                <i class=\"fa fa-file-o mr-2 text-gray-500\" *ngIf=\"!item.isFolder && getFileType(item.path) === 'other'\"></i>\r\n                {{item.title}}\r\n              </span>\r\n              \r\n              <!-- Actions pour les dossiers -->\r\n              <span class=\"flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity\" *ngIf=\"item.isFolder\">\r\n                <button \r\n                  (click)=\"showCreateFolderModal(item.id)\" \r\n                  class=\"p-1 text-indigo-500 hover:text-indigo-700 transition-colors\"\r\n                  title=\"Nouveau dossier\">\r\n                  <i class=\"fa fa-plus-circle\"></i>\r\n                </button>\r\n                <button \r\n                  (click)=\"showUploadFileModal(item.id)\" \r\n                  class=\"p-1 text-green-500 hover:text-green-700 transition-colors\"\r\n                  title=\"Uploader un fichier\">\r\n                  <i class=\"fa fa-upload\"></i>\r\n                </button>\r\n                <button \r\n                  *ngIf=\"item.parent && item.parent !== 0\"\r\n                  (click)=\"renameItem(item)\" \r\n                  class=\"p-1 text-yellow-500 hover:text-yellow-700 transition-colors\"\r\n                  title=\"Renommer\">\r\n                  <i class=\"fa fa-edit\"></i>\r\n                </button>\r\n                <button \r\n                  *ngIf=\"item.parent && item.parent !== 0\"\r\n                  (click)=\"deleteItem(item)\" \r\n                  class=\"p-1 text-red-500 hover:text-red-700 transition-colors\"\r\n                  title=\"Supprimer\">\r\n                  <i class=\"fa fa-trash\"></i>\r\n                </button>\r\n              </span>\r\n              \r\n              <!-- Actions pour les fichiers -->\r\n              <span class=\"flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity\" *ngIf=\"!item.isFolder\">\r\n                <button \r\n                  (click)=\"downloadFile(item)\" \r\n                  class=\"p-1 text-indigo-500 hover:text-indigo-700 transition-colors\"\r\n                  title=\"Télécharger\">\r\n                  <i class=\"fa fa-arrow-circle-down\"></i>\r\n                </button>\r\n                <button \r\n                  (click)=\"renameItem(item)\" \r\n                  class=\"p-1 text-yellow-500 hover:text-yellow-700 transition-colors\"\r\n                  title=\"Renommer\">\r\n                  <i class=\"fa fa-edit\"></i>\r\n                </button>\r\n                <button \r\n                  (click)=\"deleteItem(item)\" \r\n                  class=\"p-1 text-red-500 hover:text-red-700 transition-colors\"\r\n                  title=\"Supprimer\">\r\n                  <i class=\"fa fa-trash\"></i>\r\n                </button>\r\n              </span>\r\n            </span>\r\n            \r\n            <!-- Enfants (récursif) -->\r\n            <ng-container *ngIf=\"openedFolders.has(item.id)\">\r\n              <ul class=\"list-none pl-6 m-2 border-l-2 border-gray-200\">\r\n                <ng-container *ngTemplateOutlet=\"folderTree; context: {$implicit: item.id}\"></ng-container>\r\n              </ul>\r\n            </ng-container>\r\n          </li>\r\n        </ng-template>\r\n        \r\n        <!-- Niveau racine -->\r\n        <ng-container *ngTemplateOutlet=\"folderTree; context: {$implicit: 0}\"></ng-container>\r\n      </ul>\r\n    </div>\r\n\r\n    <!-- Zone de visualisation -->\r\n    <div class=\"lg:col-span-1\">\r\n      <!-- Visualiseur PDF -->\r\n      <div class=\"border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm\" *ngIf=\"pdfView\">\r\n        <div class=\"flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50\">\r\n          <h5 class=\"m-0 text-lg font-semibold text-gray-800\"><i class=\"fa fa-file-pdf mr-2 text-red-500\"></i>Visualiseur PDF</h5>\r\n          <button \r\n            class=\"flex items-center gap-1 px-3 py-1 border-2 border-red-300 text-red-500 rounded-lg text-sm font-semibold hover:bg-red-50 transition-all\"\r\n            (click)=\"closeViewer()\">\r\n            <i class=\"fa fa-times\"></i>Fermer\r\n          </button>\r\n        </div>\r\n        \r\n        <div class=\"h-[500px] overflow-auto p-2 bg-gray-100\">\r\n          <pdf-viewer \r\n            class=\"viewer bg-white p-5 rounded-lg\" \r\n            *ngIf=\"pdfSrc\"\r\n            [src]=\"pdfSrc\"\r\n            [show-all]=\"false\"\r\n            [(page)]=\"pageVariable\"\r\n            [render-text]=\"true\"\r\n            [original-size]=\"false\">\r\n          </pdf-viewer>\r\n        </div>\r\n        \r\n        <div class=\"flex justify-center items-center gap-4 p-4 border-t border-gray-200 bg-gray-50\" *ngIf=\"pdfSrc\">\r\n          <button \r\n            (click)=\"prevPage()\" \r\n            class=\"px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all\" \r\n            [disabled]=\"pageVariable <= 1\">\r\n            <i class=\"fa fa-chevron-left mr-1\"></i>Précédent\r\n          </button>\r\n          <span class=\"font-semibold text-indigo-500 min-w-[80px] text-center\">Page {{pageVariable}}</span>\r\n          <button \r\n            (click)=\"nextPage()\" \r\n            class=\"px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold transition-all\">\r\n            Suivant<i class=\"fa fa-chevron-right ml-1\"></i>\r\n          </button>\r\n        </div>\r\n      </div>\r\n      \r\n      <!-- Visualiseur Image -->\r\n      <div class=\"border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm\" *ngIf=\"imageView\">\r\n        <div class=\"flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50\">\r\n          <h5 class=\"m-0 text-lg font-semibold text-gray-800\"><i class=\"fa fa-image mr-2 text-green-500\"></i>Visualiseur Image</h5>\r\n          <button \r\n            class=\"flex items-center gap-1 px-3 py-1 border-2 border-red-300 text-red-500 rounded-lg text-sm font-semibold hover:bg-red-50 transition-all\"\r\n            (click)=\"closeViewer()\">\r\n            <i class=\"fa fa-times\"></i>Fermer\r\n          </button>\r\n        </div>\r\n        \r\n        <div class=\"flex-1 overflow-auto p-5 flex justify-center items-center bg-gray-100 min-h-[500px]\">\r\n          <img \r\n            *ngIf=\"imageSrc\"\r\n            [src]=\"imageSrc\" \r\n            alt=\"Visualisation de l'image\"\r\n            class=\"max-w-full max-h-[400px] object-contain rounded-xl shadow-lg\">\r\n        </div>\r\n        \r\n        <div class=\"flex justify-center p-4 border-t border-gray-200 bg-gray-50\" *ngIf=\"imageSrc\">\r\n          <button \r\n            (click)=\"downloadFile(currentFile)\" \r\n            class=\"px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold transition-all\">\r\n            <i class=\"fa fa-download mr-1\"></i>Télécharger\r\n          </button>\r\n        </div>\r\n      </div>\r\n      \r\n      <!-- Message quand aucun fichier n'est sélectionné -->\r\n      <div class=\"p-10 text-center text-gray-500\" *ngIf=\"!pdfView && !imageView\">\r\n        <i class=\"fa fa-file-alt fa-4x text-indigo-300 mb-4\"></i>\r\n        <p class=\"text-lg\">Sélectionnez un fichier PDF ou image pour le visualiser</p>\r\n        <small class=\"text-gray-400\">Types supportés: PDF, JPG, PNG, GIF, BMP, WEBP</small>\r\n      </div>\r\n      \r\n      <!-- Message pour fichiers non supportés -->\r\n      <div class=\"p-10 text-center border border-gray-200 rounded-xl bg-yellow-50\" *ngIf=\"currentFileType === 'other' && (pdfView || imageView)\">\r\n        <i class=\"fa fa-file-excel fa-4x text-yellow-500 mb-4\"></i>\r\n        <h5 class=\"mt-3 text-yellow-800\">Fichier non supporté pour la visualisation</h5>\r\n        <p class=\"text-gray-600\">Ce type de fichier ne peut pas être visualisé directement.</p>\r\n        <button \r\n          class=\"mt-4 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold transition-all\" \r\n          (click)=\"downloadFile(currentFile)\">\r\n          <i class=\"fa fa-download mr-1\"></i>Télécharger le fichier\r\n        </button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<!-- Loader -->\r\n<div class=\"fixed inset-0 flex items-center justify-center bg-white bg-opacity-95 z-50\" *ngIf=\"isLoading\">\r\n  <div class=\"w-40 h-40 border-4 border-purple-500 border-t-transparent rounded-full animate-spin\"></div>\r\n</div>\r\n\r\n<!-- État vide -->\r\n<div class=\"p-10 text-center text-gray-500\" *ngIf=\"!isLoading && folders.length === 0\">\r\n  <i class=\"fa fa-folder-open fa-4x text-indigo-300 mb-4\"></i>\r\n  <h4 class=\"mt-3 text-xl font-semibold text-gray-700\">Aucun dossier trouvé</h4>\r\n  <p class=\"text-gray-500\">Commencez par créer un nouveau dossier</p>\r\n  <button \r\n    class=\"mt-4 px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all\" \r\n    (click)=\"showCreateFolderModal(0)\">\r\n    <i class=\"fa fa-plus mr-2\"></i>\r\n    Créer un dossier\r\n  </button>\r\n</div>\r\n";
+    __webpack_exports__["default"] = "<div *ngIf=\"!isLoading\">\r\n  <form class=\"flex flex-wrap gap-3 mb-4\">\r\n    <div class=\"flex-1 min-w-[200px]\">\r\n      <label for=\"search\" class=\"sr-only\">Recherche</label>\r\n      <input \r\n        type=\"text\" \r\n        class=\"w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all\"\r\n        #searchInput \r\n        id=\"search\" \r\n        placeholder=\"Rechercher...\"\r\n        (keyup.enter)=\"searchItems(searchInput.value)\">\r\n    </div>\r\n    <button \r\n      type=\"button\" \r\n      class=\"flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all\"\r\n      (click)=\"searchItems(searchInput.value)\">\r\n      <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\r\n        <circle cx=\"11\" cy=\"11\" r=\"8\"></circle>\r\n        <line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"></line>\r\n      </svg>\r\n      Chercher\r\n    </button>\r\n    <button \r\n      type=\"button\" \r\n      class=\"flex items-center gap-2 px-4 py-2 border-2 border-gray-300 text-gray-600 rounded-lg font-semibold hover:bg-gray-100 transition-all\"\r\n      (click)=\"resetSearch()\">\r\n      <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\r\n        <line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"></line>\r\n        <line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"></line>\r\n      </svg>\r\n      Annuler\r\n    </button>\r\n    <div class=\"flex gap-2 ml-auto\">\r\n      <button \r\n        (click)=\"collapseAll()\" \r\n        class=\"flex items-center gap-2 px-4 py-2 border-2 border-gray-300 text-gray-600 rounded-lg font-semibold hover:bg-gray-100 transition-all\">\r\n        <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\r\n          <polyline points=\"18 15 12 9 6 15\"></polyline>\r\n        </svg>\r\n        Tout fermer\r\n      </button>\r\n      <button \r\n        (click)=\"expandAll()\" \r\n        class=\"flex items-center gap-2 px-4 py-2 border-2 border-gray-300 text-gray-600 rounded-lg font-semibold hover:bg-gray-100 transition-all\">\r\n        <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\r\n          <polyline points=\"6 9 12 15 18 9\"></polyline>\r\n        </svg>\r\n        Tout ouvrir\r\n      </button>\r\n    </div>\r\n  </form>\r\n\r\n  <!-- Contenu principal -->\r\n  <div class=\"grid grid-cols-1 lg:grid-cols-3 gap-6\">\r\n    <!-- Arborescence -->\r\n    <div class=\"lg:col-span-2\">\r\n      <ul class=\"list-none pl-0 m-0\">\r\n        <ng-template #folderTree let-parentId>\r\n          <li *ngFor=\"let item of getItemsByParent(parentId)\" \r\n              [ngClass]=\"{'bg-yellow-50 border-l-4 border-yellow-400': foundItems.includes(item)}\">\r\n            \r\n            <!-- Item header -->\r\n            <span class=\"group flex items-center p-3 rounded-lg hover:bg-indigo-50 transition-all\">\r\n              <!-- Expand/Collapse button -->\r\n              <span \r\n                class=\"flex items-center justify-center w-6 h-6 mr-2 cursor-pointer transition-transform bg-indigo-100 text-indigo-500 rounded\"\r\n                (click)=\"toggleFolder(item)\" \r\n                [ngClass]=\"{'rotate-90': openedFolders.has(item.id)}\">\r\n                <ng-container *ngIf=\"hasChildren(item.id)\">▶</ng-container>\r\n              </span>\r\n              \r\n              <!-- Item icon and name -->\r\n              <span \r\n                (click)=\"toggleFolder(item)\" \r\n                class=\"flex-1 flex items-center cursor-pointer font-medium text-gray-700 hover:text-indigo-500 transition-colors\">\r\n                <i class=\"fa fa-folder mr-2 text-yellow-500\" *ngIf=\"item.isFolder\"></i>\r\n                <i class=\"fa fa-file-pdf-o mr-2 text-red-500\" *ngIf=\"!item.isFolder && getFileType(item.path) === 'pdf'\"></i>\r\n                <i class=\"fa fa-file-image-o mr-2 text-green-500\" *ngIf=\"!item.isFolder && getFileType(item.path) === 'image'\"></i>\r\n                <i class=\"fa fa-file-o mr-2 text-gray-500\" *ngIf=\"!item.isFolder && getFileType(item.path) === 'other'\"></i>\r\n                {{item.title}}\r\n              </span>\r\n              \r\n              <!-- Actions folders -->\r\n              <span class=\"flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity\" *ngIf=\"item.isFolder\">\r\n                <button \r\n                  (click)=\"showCreateFolderModal(item.id)\" \r\n                  class=\"p-1 text-indigo-500 hover:text-indigo-700 transition-colors\"\r\n                  title=\"Nouveau dossier\">\r\n                  <i class=\"fa fa-plus-circle\"></i>\r\n                </button>\r\n                <button \r\n                  (click)=\"showUploadFileModal(item.id)\" \r\n                  class=\"p-1 text-green-500 hover:text-green-700 transition-colors\"\r\n                  title=\"Uploader un fichier\">\r\n                  <i class=\"fa fa-upload\"></i>\r\n                </button>\r\n                <button \r\n                  *ngIf=\"item.parent && item.parent !== 0\"\r\n                  (click)=\"renameItem(item)\" \r\n                  class=\"p-1 text-yellow-500 hover:text-yellow-700 transition-colors\"\r\n                  title=\"Renommer\">\r\n                  <i class=\"fa fa-edit\"></i>\r\n                </button>\r\n                <button \r\n                  *ngIf=\"item.parent && item.parent !== 0\"\r\n                  (click)=\"deleteItem(item)\" \r\n                  class=\"p-1 text-red-500 hover:text-red-700 transition-colors\"\r\n                  title=\"Supprimer\">\r\n                  <i class=\"fa fa-trash\"></i>\r\n                </button>\r\n              </span>\r\n              \r\n              <!-- Actions files type -->\r\n              <span class=\"flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity\" *ngIf=\"!item.isFolder\">\r\n                <button \r\n                  (click)=\"downloadFile(item)\" \r\n                  class=\"p-1 text-indigo-500 hover:text-indigo-700 transition-colors\"\r\n                  title=\"Télécharger\">\r\n                  <i class=\"fa fa-arrow-circle-down\"></i>\r\n                </button>\r\n                <button \r\n                  (click)=\"renameItem(item)\" \r\n                  class=\"p-1 text-yellow-500 hover:text-yellow-700 transition-colors\"\r\n                  title=\"Renommer\">\r\n                  <i class=\"fa fa-edit\"></i>\r\n                </button>\r\n                <button \r\n                  (click)=\"deleteItem(item)\" \r\n                  class=\"p-1 text-red-500 hover:text-red-700 transition-colors\"\r\n                  title=\"Supprimer\">\r\n                  <i class=\"fa fa-trash\"></i>\r\n                </button>\r\n              </span>\r\n            </span>\r\n            \r\n            <!-- child (recursive) -->\r\n            <ng-container *ngIf=\"openedFolders.has(item.id)\">\r\n              <ul class=\"list-none pl-6 m-2 border-l-2 border-gray-200\">\r\n                <ng-container *ngTemplateOutlet=\"folderTree; context: {$implicit: item.id}\"></ng-container>\r\n              </ul>\r\n            </ng-container>\r\n          </li>\r\n        </ng-template>\r\n        \r\n        <ng-container *ngTemplateOutlet=\"folderTree; context: {$implicit: 0}\"></ng-container>\r\n      </ul>\r\n    </div>\r\n\r\n    <div class=\"lg:col-span-1\">\r\n      <div class=\"border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm\" *ngIf=\"pdfView\">\r\n        <div class=\"flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50\">\r\n          <h5 class=\"m-0 text-lg font-semibold text-gray-800\"><i class=\"fa fa-file-pdf mr-2 text-red-500\"></i>Visualiseur PDF</h5>\r\n          <button \r\n            class=\"flex items-center gap-1 px-3 py-1 border-2 border-red-300 text-red-500 rounded-lg text-sm font-semibold hover:bg-red-50 transition-all\"\r\n            (click)=\"closeViewer()\">\r\n            <i class=\"fa fa-times\"></i>Fermer\r\n          </button>\r\n        </div>\r\n        \r\n        <div class=\"h-[500px] overflow-auto p-2 bg-gray-100\">\r\n          <pdf-viewer \r\n            class=\"viewer bg-white p-5 rounded-lg\" \r\n            *ngIf=\"pdfSrc\"\r\n            [src]=\"pdfSrc\"\r\n            [show-all]=\"false\"\r\n            [(page)]=\"pageVariable\"\r\n            [render-text]=\"true\"\r\n            [original-size]=\"false\">\r\n          </pdf-viewer>\r\n        </div>\r\n        \r\n        <div class=\"flex justify-center items-center gap-4 p-4 border-t border-gray-200 bg-gray-50\" *ngIf=\"pdfSrc\">\r\n          <button \r\n            (click)=\"prevPage()\" \r\n            class=\"px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all\" \r\n            [disabled]=\"pageVariable <= 1\">\r\n            <i class=\"fa fa-chevron-left mr-1\"></i>Précédent\r\n          </button>\r\n          <span class=\"font-semibold text-indigo-500 min-w-[80px] text-center\">Page {{pageVariable}}</span>\r\n          <button \r\n            (click)=\"nextPage()\" \r\n            class=\"px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold transition-all\">\r\n            Suivant<i class=\"fa fa-chevron-right ml-1\"></i>\r\n          </button>\r\n        </div>\r\n      </div>\r\n      \r\n      <div class=\"border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm\" *ngIf=\"imageView\">\r\n        <div class=\"flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50\">\r\n          <h5 class=\"m-0 text-lg font-semibold text-gray-800\"><i class=\"fa fa-image mr-2 text-green-500\"></i>Visualiseur Image</h5>\r\n          <button \r\n            class=\"flex items-center gap-1 px-3 py-1 border-2 border-red-300 text-red-500 rounded-lg text-sm font-semibold hover:bg-red-50 transition-all\"\r\n            (click)=\"closeViewer()\">\r\n            <i class=\"fa fa-times\"></i>Fermer\r\n          </button>\r\n        </div>\r\n        \r\n        <div class=\"flex-1 overflow-auto p-5 flex justify-center items-center bg-gray-100 min-h-[500px]\">\r\n          <img \r\n            *ngIf=\"imageSrc\"\r\n            [src]=\"imageSrc\" \r\n            alt=\"Visualisation de l'image\"\r\n            class=\"max-w-full max-h-[400px] object-contain rounded-xl shadow-lg\">\r\n        </div>\r\n        \r\n        <div class=\"flex justify-center p-4 border-t border-gray-200 bg-gray-50\" *ngIf=\"imageSrc\">\r\n          <button \r\n            (click)=\"downloadFile(currentFile)\" \r\n            class=\"px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold transition-all\">\r\n            <i class=\"fa fa-download mr-1\"></i>Télécharger\r\n          </button>\r\n        </div>\r\n      </div>\r\n      \r\n      <div class=\"p-10 text-center text-gray-500\" *ngIf=\"!pdfView && !imageView\">\r\n        <i class=\"fa fa-file-alt fa-4x text-indigo-300 mb-4\"></i>\r\n        <p class=\"text-lg\">Sélectionnez un fichier PDF ou image pour le visualiser</p>\r\n        <small class=\"text-gray-400\">Types supportés: PDF, JPG, PNG, GIF, BMP, WEBP</small>\r\n      </div>\r\n      \r\n      <div class=\"p-10 text-center border border-gray-200 rounded-xl bg-yellow-50\" *ngIf=\"currentFileType === 'other' && (pdfView || imageView)\">\r\n        <i class=\"fa fa-file-excel fa-4x text-yellow-500 mb-4\"></i>\r\n        <h5 class=\"mt-3 text-yellow-800\">Fichier non supporté pour la visualisation</h5>\r\n        <p class=\"text-gray-600\">Ce type de fichier ne peut pas être visualisé directement.</p>\r\n        <button \r\n          class=\"mt-4 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold transition-all\" \r\n          (click)=\"downloadFile(currentFile)\">\r\n          <i class=\"fa fa-download mr-1\"></i>Télécharger le fichier\r\n        </button>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<!-- Loader -->\r\n<div class=\"fixed inset-0 flex items-center justify-center bg-white bg-opacity-95 z-50\" *ngIf=\"isLoading\">\r\n  <div class=\"w-40 h-40 border-4 border-purple-500 border-t-transparent rounded-full animate-spin\"></div>\r\n</div>\r\n\r\n<div class=\"p-10 text-center text-gray-500\" *ngIf=\"!isLoading && folders.length === 0\">\r\n  <i class=\"fa fa-folder-open fa-4x text-indigo-300 mb-4\"></i>\r\n  <h4 class=\"mt-3 text-xl font-semibold text-gray-700\">Aucun dossier trouvé</h4>\r\n  <p class=\"text-gray-500\">Commencez par créer un nouveau dossier</p>\r\n  <button \r\n    class=\"mt-4 px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all\" \r\n    (click)=\"showCreateFolderModal(0)\">\r\n    <i class=\"fa fa-plus mr-2\"></i>\r\n    Créer un dossier\r\n  </button>\r\n</div>\r\n";
 
     /***/
   }),
@@ -1584,7 +1584,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
                 if (removeIndex !== -1) {
                   _this0.users.splice(removeIndex, 1);
                 }
-                // Supprimer les dossiers associés
+                // delete all folder associated to the parent
                 var feed = {
                   path: cab.name.split(' ').join('_'),
                   isFolder: 1
@@ -1592,7 +1592,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
                 _this0.userService.deleteFolderCabinet(cab.id).subscribe(function () {
                   _this0.userService.removeFolder(feed).subscribe({
                     next: function next() {
-                      // Suppression réussie
+                      // delete done
                     },
                     error: function error(_error2) {
                       console.error('Error removing folder:', _error2);
@@ -2490,17 +2490,14 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
         this.fileService = fileService;
         this.userService = userService;
         this.destroy$ = new rxjs__WEBPACK_IMPORTED_MODULE_11__["Subject"]();
-        // État du composant
         this.folders = [];
         this.openedFolders = new Set();
         this.foundItems = [];
         this.currentPath = '';
-        // États de chargement
         this.isLoading = false;
         this.pdfView = false;
         this.pdfSrc = '';
         this.pageVariable = 1;
-        // Visualiseur d'images
         this.imageView = false;
         this.imageSrc = '';
         this.currentFileType = 'other';
@@ -2519,7 +2516,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
         value: function ngOnDestroy() {
           this.destroy$.next();
           this.destroy$.complete();
-          // Nettoyer les URLs blob
+          // clear url blob
           if (this.pdfSrc) {
             URL.revokeObjectURL(this.pdfSrc);
           }
@@ -2528,7 +2525,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           }
         }
         /**
-         * Charge les dossiers depuis le service
+         * loading folder from services
          */
       }, {
         key: "loadFolders",
@@ -2547,7 +2544,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           });
         }
         /**
-         * Charge les informations du cabinet
+         * data cabinet
          */
       }, {
         key: "loadCabinetInfo",
@@ -2568,7 +2565,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           }
         }
         /**
-         * Bascule l'état d'ouverture d'un dossier
+         * open a folder
          */
       }, {
         key: "toggleFolder",
@@ -2578,13 +2575,13 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           } else {
             this.openedFolders.add(item.id);
           }
-          // Si c'est un fichier, déterminer le type et afficher
+          // if file, check type
           if (!item.isFolder) {
             this.displayFile(item);
           }
         }
         /**
-         * Détermine le type de fichier et affiche le visualiseur approprié
+         * vizualize
          */
       }, {
         key: "displayFile",
@@ -2592,7 +2589,6 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           this.currentFile = item;
           var fileType = this.getFileType(item.path);
           this.currentFileType = fileType;
-          // Réinitialiser les visualiseurs
           this.pdfView = false;
           this.imageView = false;
           this.pdfSrc = '';
@@ -2605,13 +2601,13 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
               this.displayImage(item);
               break;
             case 'other':
-              // Ne rien afficher pour les fichiers non-visuels
+              //  not show if unknow type
               console.log('File type not supported for preview:', item.path);
               break;
           }
         }
         /**
-         * Détermine le type de fichier basé sur l'extension
+         * determine type file
          */
       }, {
         key: "getFileType",
@@ -2629,7 +2625,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           }
         }
         /**
-         * Affiche un fichier PDF
+         * display pdf
          */
       }, {
         key: "displayPdf",
@@ -2650,7 +2646,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           });
         }
         /**
-         * Affiche une image
+         * display image
          */
       }, {
         key: "displayImage",
@@ -2658,7 +2654,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           var _this22 = this;
           console.log('Displaying image for item:', item);
           this.imageView = true;
-          // Télécharger l'image et créer une URL locale
+          // download image
           this.fileService.getFileBlob(item).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_12__["takeUntil"])(this.destroy$)).subscribe({
             next: function next(blob) {
               console.log('Image blob received, creating object URL');
@@ -2672,7 +2668,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           });
         }
         /**
-         * Ferme le visualiseur actuel
+         * close vizualiser
          */
       }, {
         key: "closeViewer",
@@ -2682,7 +2678,6 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           this.pdfSrc = '';
           this.imageSrc = '';
           this.currentFileType = 'other';
-          // Libérer les URLs blob
           if (this.pdfSrc) {
             URL.revokeObjectURL(this.pdfSrc);
           }
@@ -2691,32 +2686,22 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           }
         }
         /**
-         * Récupère les items d'un parent spécifique
          */
       }, {
         key: "getItemsByParent",
         value: function getItemsByParent(parentId) {
           return this.folderService.getItemsByParent(parentId);
         }
-        /**
-         * Vérifie si un item a des enfants
-         */
       }, {
         key: "hasChildren",
         value: function hasChildren(itemId) {
           return this.folderService.hasChildren(itemId);
         }
-        /**
-         * Ferme tous les dossiers
-         */
       }, {
         key: "collapseAll",
         value: function collapseAll() {
           this.openedFolders.clear();
         }
-        /**
-         * Ouvre tous les dossiers
-         */
       }, {
         key: "expandAll",
         value: function expandAll() {
@@ -2725,9 +2710,6 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           });
           this.openedFolders = new Set(allIds);
         }
-        /**
-         * Affiche le chemin vers un item spécifique
-         */
       }, {
         key: "showItemPath",
         value: function showItemPath(itemId) {
@@ -2740,17 +2722,11 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
             if (!currentItem) break;
           }
         }
-        /**
-         * Réinitialise la recherche
-         */
       }, {
         key: "resetSearch",
         value: function resetSearch() {
           this.foundItems = [];
         }
-        /**
-         * Recherche des items
-         */
       }, {
         key: "searchItems",
         value: function searchItems(term) {
@@ -2764,9 +2740,6 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
             return _this23.showItemPath(item.id);
           });
         }
-        /**
-         * Supprime un item
-         */
       }, {
         key: "deleteItem",
         value: function deleteItem(item) {
@@ -2780,9 +2753,6 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
             }
           });
         }
-        /**
-         * Effectue la suppression d'un item
-         */
       }, {
         key: "performDelete",
         value: function performDelete(item) {
@@ -2791,13 +2761,10 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
             path: item.path,
             isFolder: item.isFolder
           };
-          // Supprimer de la base de données
           this.userService.deleteFolder(item.id).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_12__["takeUntil"])(this.destroy$)).subscribe({
             next: function next() {
-              // Supprimer le fichier physique
               _this25.userService.removeFolder(folderData).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_12__["takeUntil"])(_this25.destroy$)).subscribe({
                 next: function next() {
-                  // Retirer de la liste locale
                   _this25.folders = _this25.folders.filter(function (f) {
                     return f.id !== item.id;
                   });
@@ -2813,9 +2780,6 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
             }
           });
         }
-        /**
-         * Affiche le modal de création de dossier
-         */
       }, {
         key: "showCreateFolderModal",
         value: function showCreateFolderModal(parentId) {
@@ -2829,9 +2793,6 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
             }
           });
         }
-        /**
-         * Crée un nouveau dossier
-         */
       }, {
         key: "createNewFolder",
         value: function createNewFolder(parentId, folderName) {
@@ -2855,9 +2816,6 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
             }
           });
         }
-        /**
-         * Affiche le modal d'upload de fichier
-         */
       }, {
         key: "showUploadFileModal",
         value: function showUploadFileModal(parentId) {
@@ -2871,9 +2829,6 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
             }
           });
         }
-        /**
-         * Upload un fichier
-         */
       }, {
         key: "uploadFile",
         value: function uploadFile(parentId, file, message) {
@@ -2891,17 +2846,14 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
             this.isLoading = false;
             return;
           }
-          // Valider le fichier
           var validation = this.fileService.validateFile(file, 10, ['pdf', 'doc', 'docx', 'txt', 'jpg', 'png']);
           if (!validation.valid) {
             console.error('File validation failed:', validation.error);
             this.isLoading = false;
             return;
           }
-          // Upload du fichier
           this.fileService.uploadFile(file, parentItem.path, message).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_12__["takeUntil"])(this.destroy$)).subscribe({
             next: function next() {
-              // Créer l'enregistrement dans la base de données
               _this29.fileService.createFileRecord(file, parentId, parentItem.path, user.cabinet_id, _this29.folders).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_12__["takeUntil"])(_this29.destroy$)).subscribe({
                 next: function next(newFile) {
                   _this29.folders.push(newFile);
@@ -2920,9 +2872,6 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
             }
           });
         }
-        /**
-         * Renomme un item
-         */
       }, {
         key: "renameItem",
         value: function renameItem(item) {
@@ -2939,9 +2888,6 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
             }
           });
         }
-        /**
-         * Effectue le renommage
-         */
       }, {
         key: "performRename",
         value: function performRename(item, newName) {
@@ -2982,9 +2928,6 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
             }
           });
         }
-        /**
-         * Télécharge un fichier
-         */
       }, {
         key: "downloadFile",
         value: function downloadFile(item) {
@@ -2993,9 +2936,6 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
             this.fileService.downloadFile(fileToDownload);
           }
         }
-        /**
-         * Navigation PDF
-         */
       }, {
         key: "nextPage",
         value: function nextPage() {
@@ -3512,7 +3452,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
         this.userService = userService;
       }
       /**
-       * Upload un fichier
+       * Upload file
        */
       return _createClass(FileService, [{
         key: "uploadFile",
@@ -3530,7 +3470,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           }));
         }
         /**
-         * Upload multiple fichiers
+         * Upload multiple files
          */
       }, {
         key: "uploadMultipleFiles",
@@ -3540,12 +3480,10 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           for (var i = 0; i < files.length; i++) {
             uploadObservables.push(this.uploadFile(files[i], parentPath, message));
           }
-          // Pour l'instant, on les fait séquentiellement. 
-          // À améliorer avec forkJoin pour le parallèle
           return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])([]);
         }
         /**
-         * Télécharge un fichier
+         * download file
          */
       }, {
         key: "downloadFile",
@@ -3564,7 +3502,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           });
         }
         /**
-         * Obtient le blob d'un fichier sans téléchargement automatique
+         * blob file
          */
       }, {
         key: "getFileBlob",
@@ -3579,7 +3517,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           }));
         }
         /**
-         * Affiche un PDF
+         * display pdf
          */
       }, {
         key: "showPdf",
@@ -3594,7 +3532,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           }));
         }
         /**
-         * Extrait le nom de fichier du chemin
+         * file name
          */
       }, {
         key: "extractFileName",
@@ -3602,23 +3540,16 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           var lastSlashIndex = path.lastIndexOf('/');
           return lastSlashIndex !== -1 ? path.substring(lastSlashIndex + 1) : path;
         }
-        /**
-         * Sanitise un nom de fichier
-         */
       }, {
         key: "sanitiseFileName",
         value: function sanitiseFileName(fileName) {
           return fileName.split(' ').join('_');
         }
-        /**
-         * Valide un fichier (taille, type, etc.)
-         */
       }, {
         key: "validateFile",
         value: function validateFile(file) {
           var maxSizeMB = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
           var allowedTypes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-          // Vérification de la taille
           var maxSizeBytes = maxSizeMB * 1024 * 1024;
           if (file.size > maxSizeBytes) {
             return {
@@ -3626,7 +3557,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
               error: "File size exceeds ".concat(maxSizeMB, "MB limit")
             };
           }
-          // Vérification du type si des types sont spécifiés
+          // verify type 
           if (allowedTypes.length > 0) {
             var fileParts = file.name.split('.');
             var fileExtension = fileParts.length > 1 ? fileParts[fileParts.length - 1].toLowerCase() : '';
@@ -3642,14 +3573,14 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
           };
         }
         /**
-         * Crée un enregistrement de fichier dans la base de données
+         * save in bdd
          */
       }, {
         key: "createFileRecord",
         value: function createFileRecord(file, parentId, parentPath, cabinetId, existingFolders) {
           var sanitisedName = this.sanitiseFileName(file.name);
           var newPath = parentPath ? "".concat(parentPath, "/").concat(sanitisedName) : sanitisedName;
-          // Générer un ID temporaire
+          // id generate
           var maxId = existingFolders.length > 0 ? Math.max.apply(Math, _toConsumableArray(existingFolders.map(function (item) {
             return item.id;
           }))) : 0;
