@@ -102007,7 +102007,7 @@ module.exports = function callBoundIntrinsic(name, allowMissing) {
 	    // Native crypto import via require (NodeJS)
 	    if (!crypto && "function" === 'function') {
 	        try {
-	            crypto = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module 'crypto'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	            crypto = __webpack_require__(/*! crypto */ "./node_modules/crypto-js/index.js");
 	        } catch (err) {}
 	    }
 
