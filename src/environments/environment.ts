@@ -12,7 +12,7 @@ export const environment = {
     storageBucket: '<your-storage-bucket>',
     messagingSenderId: '<your-messaging-sender-id>'
   },
-  urlApi: 'http://127.0.0.1:8000/api/'
+  urlApi: 'https://tree-folder.onrender.com/api/'
 };
 
 /*
