@@ -1,64 +1,58 @@
-<div class="col-md-12 user-container">
-    <h2 style="margin: auto">Historique de connexion</h2>
-    <div class="row">
-        <div class="col-md-6">
-
-
-            <form class="form-inline">
-                <div class="form-group mb-2">
-                    <input type="date" id="start" (click)="refresh()" class="form-control"  #start>
-                </div>
-                <div class="form-group mx-sm-3 mb-2">
-                    <input type="date" class="form-control" (click)="refresh()" id="end"  #end>
-                </div>
-                <button (click)="filterDate(start.value, end.value)" class="btn btn-primary">Filtrer</button>
-              </form>
-
-        </div>
-        <div class="col-md-6 mb-3">     Nombre de pages:
-            <select (change)="handlePageSizeChange($event)">
-              <option *ngFor="let size of pageSizes" [ngValue]="size">
-                {{ size }}
-              </option>
-            </select>
-
-        </div>
+<div class="p-8 bg-gray-50 rounded-2xl my-5">
+  <h2 class="text-center text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600 mb-8">Historique de connexion</h2>
+  <div class="flex flex-wrap gap-4 mb-6">
+    <div class="flex items-center gap-2">
+      <input type="date" id="start" (click)="refresh()" class="px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all" #start>
+      <input type="date" class="px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all" (click)="refresh()" id="end" #end>
+      <button (click)="filterDate(start.value, end.value)" class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all">Filtrer</button>
     </div>
-    <table class="table table-striped">
-      <thead>
-      <tr>
-        <th></th>
-        <th>Nom</th>
-        <th>email</th>
-        <th>ip</th>
-        <th>Pays</th>
-        <th>Date</th>
-        <th>Heure</th>
-      </tr>
+    <div class="flex items-center gap-2">
+      <span>Nombre de pages:</span>
+      <select (change)="handlePageSizeChange($event)" class="px-3 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all cursor-pointer">
+        <option *ngFor="let size of pageSizes" [ngValue]="size">
+          {{ size }}
+        </option>
+      </select>
+    </div>
+  </div>
+  
+  <div class="bg-white rounded-xl overflow-hidden shadow-sm">
+    <table class="w-full">
+      <thead class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
+        <tr>
+          <th class="px-6 py-4 font-semibold text-left"></th>
+          <th class="px-6 py-4 font-semibold text-left">Nom</th>
+          <th class="px-6 py-4 font-semibold text-left">Email</th>
+          <th class="px-6 py-4 font-semibold text-left">IP</th>
+          <th class="px-6 py-4 font-semibold text-left">Pays</th>
+          <th class="px-6 py-4 font-semibold text-left">Date</th>
+          <th class="px-6 py-4 font-semibold text-left">Heure</th>
+        </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let user of users| paginate : {
-        itemsPerPage: pageSize,
-        currentPage: page,
-        totalItems: count
-      }; let i = index"  [class.active]="i == currentIndex">
-        <td>{{i}}</td>
-        <td>{{user.name}}</td>
-        <td>{{user.email}}</td>
-        <td>{{user.ip}}</td>
-        <td>{{user.country}}</td>
-        <td>{{user.date}}</td>
-        <td>{{user.time}}</td>
+        <tr *ngFor="let user of users| paginate : {
+          itemsPerPage: pageSize,
+          currentPage: page,
+          totalItems: count
+        }; let i = index" class="border-b border-gray-200 hover:bg-indigo-50 transition-colors" [class.bg-indigo-100]="i == currentIndex">
+          <td class="px-6 py-4">{{i}}</td>
+          <td class="px-6 py-4">{{user.name}}</td>
+          <td class="px-6 py-4">{{user.email}}</td>
+          <td class="px-6 py-4">{{user.ip}}</td>
+          <td class="px-6 py-4">{{user.country}}</td>
+          <td class="px-6 py-4">{{user.date}}</td>
+          <td class="px-6 py-4">{{user.time}}</td>
+        </tr>
       </tbody>
     </table>
-    <div class="col-md-12">
-        <pagination-controls
-          previousLabel="Prev"
-          nextLabel="Next"
-          responsive="true"
-          (pageChange)="handlePageChange($event)"
-        ></pagination-controls>
-      </div>
-
-
   </div>
+
+  <div class="flex justify-center mt-8">
+    <pagination-controls
+      previousLabel="Prev"
+      nextLabel="Next"
+      responsive="true"
+      (pageChange)="handlePageChange($event)"
+    ></pagination-controls>
+  </div>
+</div>
