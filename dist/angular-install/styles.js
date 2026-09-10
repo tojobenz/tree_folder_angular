@@ -18,7 +18,7 @@ module.exports = [[module.i, ".modal {\n  background-color: rgba(0, 0, 0, .4);\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = [[module.i, "/* Custom animations for loader */\r\n@-webkit-keyframes spin {\r\n  0%   {\r\n    transform: rotate(0deg);\r\n  }\r\n  100% {\r\n    transform: rotate(360deg);\r\n  }\r\n}\r\n@keyframes spin {\r\n  0%   {\r\n    transform: rotate(0deg);\r\n  }\r\n  100% {\r\n    transform: rotate(360deg);\r\n  }\r\n}\r\n.animate-spin-custom {\r\n  -webkit-animation: spin 2s linear infinite;\r\n          animation: spin 2s linear infinite;\r\n}\r\n.animate-spin-custom-slow {\r\n  -webkit-animation: spin 3s linear infinite;\r\n          animation: spin 3s linear infinite;\r\n}\r\n.animate-spin-custom-fast {\r\n  -webkit-animation: spin 1.5s linear infinite;\r\n          animation: spin 1.5s linear infinite;\r\n}\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9zdHlsZXMuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLGlDQUFpQztBQUNqQztFQUNFO0lBQ0UsdUJBQXVCO0VBQ3pCO0VBQ0E7SUFDRSx5QkFBeUI7RUFDM0I7QUFDRjtBQVBBO0VBQ0U7SUFDRSx1QkFBdUI7RUFDekI7RUFDQTtJQUNFLHlCQUF5QjtFQUMzQjtBQUNGO0FBRUE7RUFDRSwwQ0FBa0M7VUFBbEMsa0NBQWtDO0FBQ3BDO0FBRUE7RUFDRSwwQ0FBa0M7VUFBbEMsa0NBQWtDO0FBQ3BDO0FBRUE7RUFDRSw0Q0FBb0M7VUFBcEMsb0NBQW9DO0FBQ3RDIiwiZmlsZSI6InNyYy9zdHlsZXMuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLyogQ3VzdG9tIGFuaW1hdGlvbnMgZm9yIGxvYWRlciAqL1xyXG5Aa2V5ZnJhbWVzIHNwaW4ge1xyXG4gIDAlICAge1xyXG4gICAgdHJhbnNmb3JtOiByb3RhdGUoMGRlZyk7XHJcbiAgfVxyXG4gIDEwMCUge1xyXG4gICAgdHJhbnNmb3JtOiByb3RhdGUoMzYwZGVnKTtcclxuICB9XHJcbn1cclxuXHJcbi5hbmltYXRlLXNwaW4tY3VzdG9tIHtcclxuICBhbmltYXRpb246IHNwaW4gMnMgbGluZWFyIGluZmluaXRlO1xyXG59XHJcblxyXG4uYW5pbWF0ZS1zcGluLWN1c3RvbS1zbG93IHtcclxuICBhbmltYXRpb246IHNwaW4gM3MgbGluZWFyIGluZmluaXRlO1xyXG59XHJcblxyXG4uYW5pbWF0ZS1zcGluLWN1c3RvbS1mYXN0IHtcclxuICBhbmltYXRpb246IHNwaW4gMS41cyBsaW5lYXIgaW5maW5pdGU7XHJcbn0iXX0= */", '', '']]
+module.exports = [[module.i, "/* Custom animations for loader */\r\n@keyframes spin {\r\n  0%   {\r\n    transform: rotate(0deg);\r\n  }\r\n  100% {\r\n    transform: rotate(360deg);\r\n  }\r\n}\r\n.animate-spin-custom {\r\n  animation: spin 2s linear infinite;\r\n}\r\n.animate-spin-custom-slow {\r\n  animation: spin 3s linear infinite;\r\n}\r\n.animate-spin-custom-fast {\r\n  animation: spin 1.5s linear infinite;\r\n}\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9zdHlsZXMuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLGlDQUFpQztBQUNqQztFQUNFO0lBQ0UsdUJBQXVCO0VBQ3pCO0VBQ0E7SUFDRSx5QkFBeUI7RUFDM0I7QUFDRjtBQUVBO0VBQ0Usa0NBQWtDO0FBQ3BDO0FBRUE7RUFDRSxrQ0FBa0M7QUFDcEM7QUFFQTtFQUNFLG9DQUFvQztBQUN0QyIsImZpbGUiOiJzcmMvc3R5bGVzLmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi8qIEN1c3RvbSBhbmltYXRpb25zIGZvciBsb2FkZXIgKi9cclxuQGtleWZyYW1lcyBzcGluIHtcclxuICAwJSAgIHtcclxuICAgIHRyYW5zZm9ybTogcm90YXRlKDBkZWcpO1xyXG4gIH1cclxuICAxMDAlIHtcclxuICAgIHRyYW5zZm9ybTogcm90YXRlKDM2MGRlZyk7XHJcbiAgfVxyXG59XHJcblxyXG4uYW5pbWF0ZS1zcGluLWN1c3RvbSB7XHJcbiAgYW5pbWF0aW9uOiBzcGluIDJzIGxpbmVhciBpbmZpbml0ZTtcclxufVxyXG5cclxuLmFuaW1hdGUtc3Bpbi1jdXN0b20tc2xvdyB7XHJcbiAgYW5pbWF0aW9uOiBzcGluIDNzIGxpbmVhciBpbmZpbml0ZTtcclxufVxyXG5cclxuLmFuaW1hdGUtc3Bpbi1jdXN0b20tZmFzdCB7XHJcbiAgYW5pbWF0aW9uOiBzcGluIDEuNXMgbGluZWFyIGluZmluaXRlO1xyXG59Il19 */", '', '']]
 
 /***/ }),
 
@@ -369,7 +369,7 @@ if (content.locals) {
 
 /***/ }),
 
-/***/ 8:
+/***/ 7:
 /*!**************************************************************************************!*\
   !*** multi ./src/styles.css ./node_modules/ngx-simple-modal/styles/simple-modal.css ***!
   \**************************************************************************************/
@@ -382,5 +382,5 @@ module.exports = __webpack_require__(/*! C:\Users\USER\Documents\portfolio\tree 
 
 /***/ })
 
-},[[8,"runtime"]]]);
-//# sourceMappingURL=styles-es2015.js.map
+},[[7,"runtime"]]]);
+//# sourceMappingURL=styles.js.map

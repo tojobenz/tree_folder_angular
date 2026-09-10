@@ -6484,7 +6484,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 7:
+/***/ 6:
 /*!***************************************************************************************************************************!*\
   !*** multi ./src/polyfills.ts ./node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/jit-polyfills.js ***!
   \***************************************************************************************************************************/
@@ -6497,5 +6497,5 @@ module.exports = __webpack_require__(/*! C:\Users\USER\Documents\portfolio\tree 
 
 /***/ })
 
-},[[7,"runtime"]]]);
-//# sourceMappingURL=polyfills-es2015.js.map
+},[[6,"runtime"]]]);
+//# sourceMappingURL=polyfills.js.map

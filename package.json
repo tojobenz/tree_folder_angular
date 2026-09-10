@@ -11,6 +11,9 @@
     "e2e": "ng e2e"
   },
   "private": true,
+  "overrides": {
+    "source-map": "0.5.6"
+  },
   "dependencies": {
     "@angular-devkit/build-angular": "~0.803.25",
     "@angular/cli": "~8.3.26",

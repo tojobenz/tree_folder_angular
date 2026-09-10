@@ -47063,4 +47063,4 @@ exports.MessageHandler = MessageHandler;
 /***/ })
 
 }]);
-//# sourceMappingURL=pdfjsWorker-es2015.js.map
+//# sourceMappingURL=pdfjsWorker.js.map
