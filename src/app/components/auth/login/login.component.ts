@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';
-  isLoading = false;
+  load = false;
   country: string | null = null;
   ip: string | null = null;
 
@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.isLoading = true;
+    this.load = true;
     this.errorMessage = '';
 
     this.authService.login(this.form).subscribe(
@@ -63,20 +63,20 @@ export class LoginComponent implements OnInit {
             // Enregistrer l'historique de connexion
             this.recordLoginHistory(user);
     
-            this.isLoading = false;
+            this.load = false;
             this.isLoginFailed = false;
             this.isLoggedIn = true;
             this.router.navigate(['/explorer']);
           },
           error => {
-            this.isLoading = false;
+            this.load = false;
             this.errorMessage = 'Erreur lors de la récupération du profil';
             this.isLoginFailed = true;
           }
         );
       },
       err => {
-        this.isLoading = false;
+        this.load = false;
         this.errorMessage = err.error && err.error.error ? err.error.error : 'Erreur de connexion';
         this.isLoginFailed = true;
       }
